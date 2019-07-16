@@ -9,7 +9,7 @@ dist
 MANIFEST
 
 .DS_Store
-
+Pipfile.lock
 app/medical-app/migrations
 app/htmlcov
 app/static
