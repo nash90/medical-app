@@ -1,0 +1,15 @@
+
+*.pc
+*.pyc
+*.pyo
+
+__pycache__
+build
+dist
+MANIFEST
+
+.DS_Store
+
+app/medical-app/migrations
+app/htmlcov
+app/static
