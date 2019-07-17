@@ -13,7 +13,7 @@ class DrugSubClass(Base):
   __tablename__ = 'drug_subclass'
   drug_subclass_id = Column('drug_subclass_id', Integer, primary_key=True)
   drug_class_id = Column('drug_class_id', Integer, ForeignKey('drug_class.drug_class_id'))
-  drug_subclass_name = Column('drug_class_name', String(32))
+  drug_subclass_name = Column('drug_subclass_name', String(32))
   drug_subclass_description = Column('drug_class_description', String(32))
 
 class Drug(Base):
@@ -21,12 +21,12 @@ class Drug(Base):
   drug_id = Column('drug_id', Integer, primary_key=True)
   drug_subclass_id = Column('drug_subclass_id', Integer, ForeignKey('drug_subclass.drug_subclass_id'))
   drug_name = Column('drug_name', String(32))
-  black_box_warning = Column('black_box_warning', String(32))
+  black_box_warning = Column('black_box_warning', String(500))
 
-class DrungInformationType(Base):
+class DrugInformationType(Base):
   __tablename__ = 'drug_information_type'
   drug_info_type_id = Column('drug_info_type_id', Integer, primary_key=True)
-  drug_indication_type = Column('drug_indication_type', String(32))
+  drug_information_type = Column('drug_information_type', String(32))
   game_level = Column('game_level', Integer)
 
 class DrugInformation(Base):
