@@ -9,10 +9,17 @@ class DrugClass(Base):
   drug_class_name = Column('drug_class_name', String(32))
   drug_class_description = Column('drug_class_description', String(32))
 
+class DrugSubClass(Base):
+  __tablename__ = 'drug_subclass'
+  drug_subclass_id = Column('drug_class_id', Integer, primary_key=True)
+  drug_class_id = Column('drug_class_id', Integer, ForeignKey('drug_class.drug_class_id'))
+  drug_subclass_name = Column('drug_class_name', String(32))
+  drug_subclass_description = Column('drug_class_description', String(32))
+
 class Drug(Base):
   __tablename__ = 'drug'
   drug_id = Column('drug_id', Integer, primary_key=True)
-  drug_class_id = Column('drug_class_id', Integer, ForeignKey('drug_class.drug_class_id'))
+  drug_subclass_id = Column('drug_class_id', Integer, ForeignKey('drug_subclass.drug_subclass_id'))
   drug_name = Column('drug_name', String(32))
   black_box_warning = Column('black_box_warning', String(32))
 
