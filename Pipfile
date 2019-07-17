@@ -7,6 +7,9 @@ verify_ssl = true
 
 [packages]
 sqlalchemy = "*"
+pandas = "*"
+psycopg2 = "*"
+xlrd = "*"
 
 [requires]
 python_version = "3.7"
