@@ -11,7 +11,7 @@ class DrugClass(Base):
 
 class DrugSubClass(Base):
   __tablename__ = 'drug_subclass'
-  drug_subclass_id = Column('drug_class_id', Integer, primary_key=True)
+  drug_subclass_id = Column('drug_subclass_id', Integer, primary_key=True)
   drug_class_id = Column('drug_class_id', Integer, ForeignKey('drug_class.drug_class_id'))
   drug_subclass_name = Column('drug_class_name', String(32))
   drug_subclass_description = Column('drug_class_description', String(32))
@@ -19,7 +19,7 @@ class DrugSubClass(Base):
 class Drug(Base):
   __tablename__ = 'drug'
   drug_id = Column('drug_id', Integer, primary_key=True)
-  drug_subclass_id = Column('drug_class_id', Integer, ForeignKey('drug_subclass.drug_subclass_id'))
+  drug_subclass_id = Column('drug_subclass_id', Integer, ForeignKey('drug_subclass.drug_subclass_id'))
   drug_name = Column('drug_name', String(32))
   black_box_warning = Column('black_box_warning', String(32))
 
@@ -49,7 +49,7 @@ class DrugQuizQuestion(Base):
   drug_id = Column('drug_id', Integer, ForeignKey('drug.drug_id'))
   drug_info_type_id = Column('drug_info_type_id', Integer, ForeignKey('drug_information_type.drug_info_type_id'))
   quiz_question = Column('quiz_question', String(500))
-  enable = Column('quiz_question', Boolean)
+  enable = Column('enable', Boolean)
 
 class DrugQuizOption(Base):
   __tablename__ = 'drug_quiz_option'
