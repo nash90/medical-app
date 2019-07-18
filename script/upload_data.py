@@ -157,25 +157,29 @@ def updateDrugKeyword(row):
   drug_information = row[Drug_Information]
   drug_keyword = row[Keyword]
 
-  drug_information_obj = session.query(DrugInformation).filter(
-    Drug.drug_name == drug_name).filter(
-    DrugInformationType.drug_information_type == drug_info_type).filter(
-    DrugInformation.information == drug_information).all()
+  if isNan(drug_name) == False and isNan(drug_info_type) == False and isNan(drug_information) == False and isNan(drug_keyword) == False:
+    drug_information_obj = session.query(DrugInformation).filter(
+      Drug.drug_name == drug_name).filter(
+      DrugInformationType.drug_information_type == drug_info_type).filter(
+      DrugInformation.information == drug_information).all()
 
-  drug_info = drug_information_obj[0]
+    drug_info = drug_information_obj[0]
 
-  keyword_obj = getIDFromDB(drug_keyword, DrugKeyword)
-  if  keyword_obj == None:
-    keyword_obj = DrugKeyword(keyword=drug_keyword)
+    keyword_id = getIDFromDB(drug_keyword, DrugKeyword)
+    keyword_obj = DrugKeyword()
+    if  keyword_id == None:
+      keyword_obj = DrugKeyword(keyword=drug_keyword)
+    else:
+      keyword_obj = session.query(DrugKeyword).get(keyword_id)
 
-  drug_info.keyword.append(keyword_obj)  
+    drug_info.keyword.append(keyword_obj)  
   
 
 
 def run_script():
   for index, row in df_drug_info.iterrows():
-    if index>5:
-      break
+    #if index>5:
+    #  break
     updateDrugClass(row) 
     updateDrugSubClass(row)
     updateDrugInformationType(row)

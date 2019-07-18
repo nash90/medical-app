@@ -21,7 +21,7 @@ class Drug(Base):
   __tablename__ = 'drug'
   drug_id = Column('drug_id', Integer, primary_key=True)
   drug_subclass_id = Column('drug_subclass_id', Integer, ForeignKey('drug_subclass.drug_subclass_id'))
-  drug_name = Column('drug_name', String(32))
+  drug_name = Column('drug_name', String(256))
   black_box_warning = Column('black_box_warning', String(500))
   drug_information = relationship("DrugInformation", back_populates="drug")
 
@@ -53,7 +53,7 @@ class DrugKeyword(Base):
   __tablename__ = 'drug_keyword'
   keyword_id = Column('keyword_id', Integer, primary_key=True)
   #drug_info_id = Column('drug_info_id', Integer, ForeignKey('drug_information.drug_info_id'))
-  keyword = Column('keyword', String(32))
+  keyword = Column('keyword', String(256))
 
 
 class DrugQuizQuestion(Base):
