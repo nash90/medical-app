@@ -41,7 +41,10 @@ df_drug_info = pd.read_excel(file, sheet_name=drug_info_sheet_name)
 #print(df_drug_info)
 
 def createTableIfNotExit():
-  Base.metadata.create_all(engine)
+  return Base.metadata.create_all(engine)
+
+def dropAllTable():
+  return Base.metadata.drop_all(engine)
 
 def isNan(value):
   if type(value) == float:
@@ -56,9 +59,11 @@ def getModelNameAttribute(model):
   elif model == DrugSubClass:
     return {"attribute":DrugSubClass.drug_subclass_name, "id":"drug_subclass_id"}
   elif model == Drug:
-    return {"attribute":Drug.drug_name, "id":""}
+    return {"attribute":Drug.drug_name, "id":"drug_id"}
   elif model == DrugInformationType:
-    return {"attribute":DrugInformationType.drug_information_type, "id":""}
+    return {"attribute":DrugInformationType.drug_information_type, "id":"drug_info_type_id"}
+  elif model == DrugKeyword:
+    return {"attribute":DrugKeyword.keyword, "id":"keyword_id"}    
 
 def updatePersistingObject(persisted, new, attr):
   for item in attr:
@@ -78,33 +83,6 @@ def getIDFromDB(name, model):
         return None
   except Exception as e:
     print("cant get id from db",e)
-
-def getIDFromName(name, model):
-  if isNan(name) == False and model == 'DrugClass':
-    has_item = session.query(DrugClass).filter(Drug_Class.drug_class_name == name).all()
-    if len(has_item) > 0:
-      item = has_item[0]
-      return item.drug_class_id
-    else:
-      return None
-
-  if isNan(name) == False and model == 'DrugSubClass':
-    has_item = session.query(DrugSubClass).filter(DrugSubClass.drug_subclass_name == name).all()
-    if len(has_item) > 0:
-      item = has_item[0]
-      return item.drug_subclass_id
-    else:
-      return None
-
-  if isNan(name) == False and model == 'Drug':
-    has_item = session.query(Drug).filter(Drug.drug_subclass_name == name).all()
-    if len(has_item) > 0:
-      item = has_item[0]
-      return item.drug_subclass_id
-    else:
-      return None    
-
-  return None
 
 def updateDrugClass(row):
   drug_class = row[Drug_Class]
@@ -162,8 +140,37 @@ def updateDrug(row):
 def updateDrugInformation(row):
   drug_name = row[Drug_Name]
   drug_id = getIDFromDB(drug_name, Drug)
-  drug_subclass_name = row[Drug_SubClass]
-  drug_subclass_id = getIDFromDB(drug_subclass_name, DrugSubClass)
+  drug_information_type = row[Drug_Information_Type]
+  drug_info_type_id = getIDFromDB(drug_information_type, DrugInformationType)
+  information = row[Drug_Information]
+  scrabble_hint = row[Scrabble_Hint]
+
+  new_item = DrugInformation(drug_id=drug_id, drug_info_type_id=drug_info_type_id, 
+  information=information, scrabble_hint=scrabble_hint)
+
+  if isNan(information) == False:
+    session.add(new_item)
+
+def updateDrugKeyword(row):
+  drug_name = row[Drug_Name]
+  drug_info_type = row[Drug_Information_Type]
+  drug_information = row[Drug_Information]
+  drug_keyword = row[Keyword]
+
+  drug_information_obj = session.query(DrugInformation).filter(
+    Drug.drug_name == drug_name).filter(
+    DrugInformationType.drug_information_type == drug_info_type).filter(
+    DrugInformation.information == drug_information).all()
+
+  drug_info = drug_information_obj[0]
+
+  keyword_obj = getIDFromDB(drug_keyword, DrugKeyword)
+  if  keyword_obj == None:
+    keyword_obj = DrugKeyword(keyword=drug_keyword)
+
+  drug_info.keyword.append(keyword_obj)  
+  
+
 
 def run_script():
   for index, row in df_drug_info.iterrows():
@@ -173,11 +180,14 @@ def run_script():
     updateDrugSubClass(row)
     updateDrugInformationType(row)
     updateDrug(row)
-    #updateDrugInformation(row)
+    updateDrugInformation(row)
+    updateDrugKeyword(row)
+
 
 #logging.basicConfig()
 #logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 session = Session()
+dropAllTable()
 createTableIfNotExit()
 run_script()
 session.commit()
