@@ -45,6 +45,7 @@ class DrugInformation(Base):
   drug_info_type_id = Column('drug_info_type_id', Integer, ForeignKey('drug_information_type.drug_info_type_id'))
   information = Column('information', String(1024))
   scrabble_hint = Column('scrabble_hint', String(1024))
+  keyword_bk = Column('keyword_bk', String(1024))
   drug_info_type = relationship("DrugInformationType", back_populates="drug_information")
   drug = relationship("Drug", back_populates="drug_information")
   keyword = relationship("DrugKeyword",

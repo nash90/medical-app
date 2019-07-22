@@ -152,9 +152,10 @@ def updateDrugInformation(row):
   drug_info_type_id = getIDFromDB(drug_information_type, DrugInformationType)
   information = row[Drug_Information]
   scrabble_hint = row[Scrabble_Hint]
+  keyword_bk = row[Keyword]
 
   new_item = DrugInformation(drug_id=drug_id, drug_info_type_id=drug_info_type_id, 
-  information=information, scrabble_hint=scrabble_hint)
+  information=information, scrabble_hint=scrabble_hint, keyword_bk = keyword_bk)
 
   if isNan(information) == False:
     session.add(new_item)
@@ -166,21 +167,27 @@ def updateDrugKeyword(row):
   drug_keyword = row[Keyword]
 
   if isNan(drug_name) == False and isNan(drug_info_type) == False and isNan(drug_information) == False and isNan(drug_keyword) == False:
-    drug_information_obj = session.query(DrugInformation).filter(
+    drug_information_obj = session.query(DrugInformation).join(
+      Drug).join(
+      DrugInformationType).filter(
       Drug.drug_name == drug_name).filter(
       DrugInformationType.drug_information_type == drug_info_type).filter(
       DrugInformation.information == drug_information).all()
 
     drug_info = drug_information_obj[0]
 
-    keyword_id = getIDFromDB(drug_keyword, DrugKeyword)
-    keyword_obj = DrugKeyword()
-    if  keyword_id == None:
-      keyword_obj = DrugKeyword(keyword=drug_keyword)
-    else:
-      keyword_obj = session.query(DrugKeyword).get(keyword_id)
+    keywords = [x.strip() for x in drug_keyword.split(";")]
+    keywords = list(filter(None,keywords))
 
-    drug_info.keyword.append(keyword_obj)  
+    for keyword in keywords:
+      keyword_obj = None
+      keyword_id = getIDFromDB(keyword, DrugKeyword)
+      if  keyword_id == None:
+        keyword_obj = DrugKeyword(keyword=keyword)
+      else:
+        keyword_obj = session.query(DrugKeyword).get(keyword_id)
+      if keyword_obj != None:
+        drug_info.keyword.append(keyword_obj)  
   
 def updateQuizQuestion(row):
   drug_name = row[Drug_Name]
@@ -246,7 +253,7 @@ def run_script():
   dropAllTable()
   createTableIfNotExit()
   upload_drug_info_data()
-  upload_quiz_data()
+  #upload_quiz_data()
 
   session.commit()
   session.close()
