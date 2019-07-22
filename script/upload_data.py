@@ -32,12 +32,20 @@ Scrabble_Hint = "Scrabble_Hint"
 Keyword = "Keyword"
 Quiz_Question = "Quiz_Question"
 Quiz_Type = "Quiz_Type"
+Drug_Quiz_Id = "Drug_Quiz_Id"
+Drug_Option = "Drug_Option"
+Correct_Answer_Flag = "Correct_Answer_Flag"
+Drug_Quiz_Option = "Drug_Quiz_Option"
 Enable = "Enable"
 
 file = settings['file_src']
 drug_info_sheet_name = settings['drug_info_sheet_name']
+quiz_sheet_name = settings['quiz_sheet_name']
+quiz_option_sheet_name = settings['quiz_option_sheet_name']
 
 df_drug_info = pd.read_excel(file, sheet_name=drug_info_sheet_name)
+df_quiz = pd.read_excel(file, sheet_name=quiz_sheet_name)
+df_quiz_opt = pd.read_excel(file, sheet_name=quiz_option_sheet_name)
 #print(df_drug_info)
 
 def createTableIfNotExit():
@@ -174,12 +182,46 @@ def updateDrugKeyword(row):
 
     drug_info.keyword.append(keyword_obj)  
   
+def updateQuizQuestion(row):
+  drug_name = row[Drug_Name]
+  drug_information_type = row[Drug_Information_Type]
+  quiz_question = row[Quiz_Question]
+  quiz_type = row[Quiz_Type]
+
+  if isNan(drug_name) == False and isNan(drug_information_type) == False and isNan(quiz_question) == False and isNan(quiz_type) == False:
+    drug_name = drug_name.lower()
+    
+    drug = session.query(Drug).filter(
+      Drug.drug_name == drug_name
+    ).all()
+    #print(drug)
+    drug = drug[0]
+
+    drug_information = session.query(DrugInformationType).filter(
+      DrugInformationType.drug_information_type == drug_information_type
+    ).all()[0]
+
+    drug_id = drug.drug_id
+    drug_info_type_id = drug_information.drug_info_type_id
 
 
-def run_script():
+    new_item = DrugQuizQuestion(drug_id=drug_id, drug_info_type_id=drug_info_type_id, quiz_question=quiz_question,
+    quiz_type=quiz_type)
+    session.add(new_item)
+
+def updateQuizOption(row):
+  quiz_id = row[Drug_Quiz_Id]
+  drug_quiz_option = row[Drug_Quiz_Option]
+  correct_answer_flag = True if row[Correct_Answer_Flag] == "Level" else False
+
+  if isNan(quiz_id) == False and isNan(drug_quiz_option) == False and isNan(correct_answer_flag) == False:
+    new_item = DrugQuizOption(quiz_id=quiz_id, quiz_option=drug_quiz_option, correct_flag=correct_answer_flag)
+    session.add(new_item)
+
+def upload_drug_info_data():
   for index, row in df_drug_info.iterrows():
     #if index>5:
-    #  break
+    #  break  
     updateDrugClass(row) 
     updateDrugSubClass(row)
     updateDrugInformationType(row)
@@ -187,12 +229,29 @@ def run_script():
     updateDrugInformation(row)
     updateDrugKeyword(row)
 
+def upload_quiz_data():
+  for index, row in df_quiz.iterrows():
+    updateQuizQuestion(row)
 
-#logging.basicConfig()
-#logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+  for index, row in df_quiz_opt.iterrows():
+    updateQuizOption(row)
+
+def run_script():
+  #logging.basicConfig()
+  #logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+
+  dropAllTable()
+  createTableIfNotExit()
+  upload_drug_info_data()
+  upload_quiz_data()
+
+  session.commit()
+  session.close()
+
 session = Session()
-dropAllTable()
-createTableIfNotExit()
 run_script()
-session.commit()
-session.close()
+
+  
+
+
+

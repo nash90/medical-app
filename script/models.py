@@ -24,6 +24,7 @@ class Drug(Base):
   drug_name = Column('drug_name', String(256))
   black_box_warning = Column('black_box_warning', String(500))
   drug_information = relationship("DrugInformation", back_populates="drug")
+  drug_quiz_question = relationship("DrugQuizQuestion", back_populates="drug")
 
 class DrugInformationType(Base):
   __tablename__ = 'drug_information_type'
@@ -62,7 +63,10 @@ class DrugQuizQuestion(Base):
   drug_id = Column('drug_id', Integer, ForeignKey('drug.drug_id'))
   drug_info_type_id = Column('drug_info_type_id', Integer, ForeignKey('drug_information_type.drug_info_type_id'))
   quiz_question = Column('quiz_question', String(500))
+  quiz_type = Column('quiz_type', String(200))
   enable = Column('enable', Boolean)
+  drug = relationship("Drug", back_populates="drug_quiz_question")
+  drug_quiz_option = relationship("DrugQuizOption", back_populates="drug_quiz_question")
 
 class DrugQuizOption(Base):
   __tablename__ = 'drug_quiz_option'
@@ -70,4 +74,5 @@ class DrugQuizOption(Base):
   quiz_id = Column('quiz_id', Integer, ForeignKey('drug_quiz_question.drug_quiz_id'))
   quiz_option = Column('quiz_option', String(200))
   correct_flag = Column('correct_flag', Boolean)
+  drug_quiz_question = relationship("DrugQuizQuestion", back_populates="drug_quiz_option")
 
