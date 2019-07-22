@@ -223,26 +223,21 @@ def upload_drug_info_data():
     #if index>5:
     #  break  
     updateDrugClass(row) 
-    print("Process drug_class table")
     updateDrugSubClass(row)
-    print("Processed drug_subclass table")
     updateDrugInformationType(row)
-    print("Processed drug_information table")
     updateDrug(row)
-    print("Processed drug table")
     updateDrugInformation(row)
-    print("Processed drug_information table")
     updateDrugKeyword(row)
-    print("Processed drug_keyword table")
+  print("Processed Drug Information sheet")
 
 def upload_quiz_data():
   for index, row in df_quiz.iterrows():
     updateQuizQuestion(row)
-    print("Process drug_quiz_question table")
+  print("Processed Drug Question sheet")
 
   for index, row in df_quiz_opt.iterrows():
     updateQuizOption(row)
-    print("Processed drug_quiz_option table")
+  print("Processed Drug Quiz Option sheet")
 
 def run_script():
   #logging.basicConfig()
