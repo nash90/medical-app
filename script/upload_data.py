@@ -253,7 +253,7 @@ def run_script():
   dropAllTable()
   createTableIfNotExit()
   upload_drug_info_data()
-  #upload_quiz_data()
+  upload_quiz_data()
 
   session.commit()
   session.close()
