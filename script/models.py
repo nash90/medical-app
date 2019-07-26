@@ -15,7 +15,7 @@ class DrugSubClass(Base):
   drug_subclass_id = Column('drug_subclass_id', Integer, primary_key=True)
   drug_class_id = Column('drug_class_id', Integer, ForeignKey('drug_class.drug_class_id'))
   drug_subclass_name = Column('drug_subclass_name', String(50))
-  drug_subclass_description = Column('drug_class_description', String(200))
+  drug_subclass_description = Column('drug_subclass_description', String(200))
 
 class Drug(Base):
   __tablename__ = 'drug'
