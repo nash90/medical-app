@@ -8,5 +8,6 @@ settings = {
   "file_src":"/Users/abinash/Desktop/project/healthapp/data/Cardio and Mental Drug Game.xlsx",
   "drug_info_sheet_name":"Project",
   "quiz_sheet_name":"Drug Quiz Question",
-  "quiz_option_sheet_name":"Drug Quiz Option"
+  "quiz_option_sheet_name":"Drug Quiz Option",
+  "db_debug_flag":False
 }

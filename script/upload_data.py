@@ -31,6 +31,10 @@ Drug_Information_Type = "Drug_Information_Type"
 Drug_Information = "Drug_Information"
 Scrabble_Hint = "Scrabble_Hint"
 Keyword = "Keyword"
+Keyword2 = "Keyword2"
+Keyword3 = "Keyword3"
+Keyword4 = "Keyword4"
+Keyword5 = "Keyword5"
 Quiz_Question = "Quiz_Question"
 Quiz_Type = "Quiz_Type"
 Drug_Quiz_Id = "Drug_Quiz_Id"
@@ -43,6 +47,7 @@ file = settings['file_src']
 drug_info_sheet_name = settings['drug_info_sheet_name']
 quiz_sheet_name = settings['quiz_sheet_name']
 quiz_option_sheet_name = settings['quiz_option_sheet_name']
+db_debug_flag = settings['db_debug_flag']
 
 df_drug_info = pd.read_excel(file, sheet_name=drug_info_sheet_name)
 df_quiz = pd.read_excel(file, sheet_name=quiz_sheet_name)
@@ -114,7 +119,7 @@ def getIDFromDB(name, model):
     print("cant get id from db",e)
 
 def updateDrugClass(row):
-  drug_class = row[Drug_Class]
+  drug_class = strip(row[Drug_Class])
   if isNan(drug_class) == False:
     has_item = session.query(DrugClass).filter(DrugClass.drug_class_name == drug_class).all()
     if len(has_item) < 1:
@@ -122,7 +127,7 @@ def updateDrugClass(row):
       session.add(new_item)
 
 def updateDrugInformationType(row):
-  drug_information_type = row[Drug_Information_Type]
+  drug_information_type = strip(row[Drug_Information_Type])
   
   if isNan(drug_information_type) == False:
     new_item = DrugInformationType(drug_information_type=drug_information_type)
@@ -131,8 +136,8 @@ def updateDrugInformationType(row):
       session.add(new_item)
 
 def updateDrugSubClass(row):
-  drug_subclass_name = row[Drug_SubClass]
-  drug_class = row[Drug_Class]
+  drug_subclass_name = strip(row[Drug_SubClass])
+  drug_class = strip(row[Drug_Class])
   drug_class_id = getIDFromDB(drug_class, DrugClass)
 
   new_item = DrugSubClass(drug_class_id=drug_class_id, drug_subclass_name=drug_subclass_name)
@@ -147,11 +152,11 @@ def updateDrugSubClass(row):
         item.drug_class_id = new_item.drug_class_id
 
 def updateDrug(row):
-  drug_subclass_name = row[Drug_SubClass]
+  drug_subclass_name = strip(row[Drug_SubClass])
   drug_subclass_id = getIDFromDB(drug_subclass_name, DrugSubClass)
   #print("debug", drug_subclass_id)
-  drug_name = row[Drug_Name]
-  black_box_warning = row[BB_Warning]
+  drug_name = strip(row[Drug_Name])
+  black_box_warning = strip(row[BB_Warning])
 
   new_item = Drug(drug_subclass_id=drug_subclass_id, drug_name = drug_name, black_box_warning=black_box_warning)
 
@@ -165,29 +170,38 @@ def updateDrug(row):
         item = updatePersistingObject(item,new_item,update_attr)
 
 
+def getKeywordBackup(row):
+  keywords = [row[Keyword], row[Keyword2], row[Keyword3], row[Keyword4], row[Keyword5]]
+  keywords = list(filter(lambda x: (isNan(x) == False), keywords))
+  return "; ".join(keywords)
+  
 
 def updateDrugInformation(row):
-  drug_name = row[Drug_Name]
+  drug_name = strip(row[Drug_Name])
   drug_id = getIDFromDB(drug_name, Drug)
-  drug_information_type = row[Drug_Information_Type]
+  drug_information_type = strip(row[Drug_Information_Type])
   drug_info_type_id = getIDFromDB(drug_information_type, DrugInformationType)
-  information = row[Drug_Information]
-  scrabble_hint = row[Scrabble_Hint]
-  keyword_bk = row[Keyword]
+  information = strip(row[Drug_Information])
+  scrabble_hint = strip(row[Scrabble_Hint])
+  keyword_bk = getKeywordBackup(row)
 
   new_item = DrugInformation(drug_id=drug_id, drug_info_type_id=drug_info_type_id, 
   information=information, scrabble_hint=scrabble_hint, keyword_bk = keyword_bk)
 
   if isNan(information) == False:
     session.add(new_item)
+  else:
+    print("Could not insert Information: " + str(drug_name) + str(drug_information_type) + str(information))
+  
 
 def updateDrugKeyword(row):
-  drug_name = row[Drug_Name]
-  drug_info_type = row[Drug_Information_Type]
-  drug_information = row[Drug_Information]
-  drug_keyword = row[Keyword]
+  drug_name = strip(row[Drug_Name])
+  drug_info_type = strip(row[Drug_Information_Type])
+  drug_information = strip(row[Drug_Information])
+  #drug_keyword = row[Keyword]
+  keyword, keyword2, keyword3, keyword4, keyword5 = strip(row[Keyword]), strip(row[Keyword2]), strip(row[Keyword3]), strip(row[Keyword4]), strip(row[Keyword5])
 
-  if isNan(drug_name) == False and isNan(drug_info_type) == False and isNan(drug_information) == False and isNan(drug_keyword) == False:
+  if isNan(drug_name) == False and isNan(drug_info_type) == False and isNan(drug_information) == False and isNan(keyword) == False:
     drug_information_obj = session.query(DrugInformation).join(
       Drug).join(
       DrugInformationType).filter(
@@ -197,7 +211,9 @@ def updateDrugKeyword(row):
 
     drug_info = drug_information_obj[0]
 
-    keywords = [x.strip() for x in drug_keyword.split(";")]
+    #keywords = [x.strip() for x in drug_keyword.split(";")]
+    keywords =[keyword,keyword2,keyword3,keyword4, keyword5]
+    keywords = list(filter(lambda x:(type(x)==str),keywords))
     keywords = list(filter(None,keywords))
 
     for keyword in keywords:
@@ -252,8 +268,8 @@ def updateQuizOption(row):
 
 def uploadDrugInfoData():
   for index, row in df_drug_info.iterrows():
-    #if index>10:
-    #  break  
+    if index>900:
+      break  
     updateDrugClass(row) 
     updateDrugSubClass(row)
     updateDrugInformationType(row)
@@ -281,17 +297,19 @@ def uploadQuizOption():
   print("Processed Drug Quiz Option sheet")
 
 def run_script():
-  #logging.basicConfig()
-  #logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
   print("Script Started ...")
-  dropAllTable()
-  dropQuizTables()
+  dropAllTable() 
+  #dropQuizTables() # for debuging
   createTableIfNotExit()
   uploadDrugInfoData()
   uploadQuizQuestion()
   uploadQuizOption()
   session.close()
   print("Script Completed ...")
+
+if db_debug_flag == True:
+  logging.basicConfig()
+  logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 session = Session()
 run_script()
