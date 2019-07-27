@@ -5,6 +5,7 @@ import json
 import pandas as pd
 import math
 import logging
+import traceback
 
 from base import Base
 from base import engine
@@ -54,12 +55,32 @@ def createTableIfNotExit():
 def dropAllTable():
   return Base.metadata.drop_all(engine)
 
+def dropQuizTables():
+  DrugQuizOption.__table__.drop(engine)
+  DrugQuizQuestion.__table__.drop(engine)
+
+def addDataToDB(obj):
+  session.add(obj)
+  try:  
+    session.commit()
+  except Exception as e:
+    session.rollback()
+    #print(e)
+    raise e
+    
+
 def isNan(value):
   if type(value) == float:
     return math.isnan(value)
   elif value == "" or value == None:
     return True
   return False
+
+def strip(value):
+  if type(value) == str:
+    return value.strip()
+  else:
+    return value
 
 def getModelNameAttribute(model):
   if model == DrugClass:
@@ -190,10 +211,11 @@ def updateDrugKeyword(row):
         drug_info.keyword.append(keyword_obj)  
   
 def updateQuizQuestion(row):
-  drug_name = row[Drug_Name]
-  drug_information_type = row[Drug_Information_Type]
-  quiz_question = row[Quiz_Question]
-  quiz_type = row[Quiz_Type]
+  drug_quiz_id = int(row[Drug_Quiz_Id])
+  drug_name = strip(row[Drug_Name])
+  drug_information_type = strip(row[Drug_Information_Type])
+  quiz_question = strip(row[Quiz_Question])
+  quiz_type = strip(row[Quiz_Type])
 
   if isNan(drug_name) == False and isNan(drug_information_type) == False and isNan(quiz_question) == False and isNan(quiz_type) == False:
     drug_name = drug_name.lower()
@@ -202,6 +224,8 @@ def updateQuizQuestion(row):
       Drug.drug_name == drug_name
     ).all()
     #print(drug)
+    if len(drug) == 0:
+      raise Exception('Could not find Drug :'+drug_name)
     drug = drug[0]
 
     drug_information = session.query(DrugInformationType).filter(
@@ -212,22 +236,23 @@ def updateQuizQuestion(row):
     drug_info_type_id = drug_information.drug_info_type_id
 
 
-    new_item = DrugQuizQuestion(drug_id=drug_id, drug_info_type_id=drug_info_type_id, quiz_question=quiz_question,
+    new_item = DrugQuizQuestion(drug_quiz_id = drug_quiz_id, drug_id=drug_id, drug_info_type_id=drug_info_type_id, quiz_question=quiz_question,
     quiz_type=quiz_type)
-    session.add(new_item)
+    addDataToDB(new_item)
 
 def updateQuizOption(row):
   quiz_id = row[Drug_Quiz_Id]
   drug_quiz_option = row[Drug_Quiz_Option]
-  correct_answer_flag = True if row[Correct_Answer_Flag] == "Level" else False
+  correct_answer = row[Correct_Answer_Flag]
+  correct_answer_flag = True if type(correct_answer) == str and correct_answer.lower() == "correct" else False
 
   if isNan(quiz_id) == False and isNan(drug_quiz_option) == False and isNan(correct_answer_flag) == False:
     new_item = DrugQuizOption(quiz_id=quiz_id, quiz_option=drug_quiz_option, correct_flag=correct_answer_flag)
-    session.add(new_item)
+    addDataToDB(new_item)
 
-def upload_drug_info_data():
+def uploadDrugInfoData():
   for index, row in df_drug_info.iterrows():
-    #if index>5:
+    #if index>10:
     #  break  
     updateDrugClass(row) 
     updateDrugSubClass(row)
@@ -235,15 +260,24 @@ def upload_drug_info_data():
     updateDrug(row)
     updateDrugInformation(row)
     updateDrugKeyword(row)
+  session.commit()
   print("Processed Drug Information sheet")
 
-def upload_quiz_data():
+def uploadQuizQuestion():
   for index, row in df_quiz.iterrows():
-    updateQuizQuestion(row)
+    try:
+      updateQuizQuestion(row)
+    except Exception as e:
+      print(e)
+      #print(traceback.format_exc())
   print("Processed Drug Question sheet")
 
+def uploadQuizOption():
   for index, row in df_quiz_opt.iterrows():
-    updateQuizOption(row)
+    try:
+      updateQuizOption(row)
+    except Exception as e:
+      print(str(type(e)) + ": Failed to upload quiz option :", str(row[Drug_Quiz_Id]) + " - " +row[Drug_Quiz_Option])
   print("Processed Drug Quiz Option sheet")
 
 def run_script():
@@ -251,16 +285,17 @@ def run_script():
   #logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
   print("Script Started ...")
   dropAllTable()
+  dropQuizTables()
   createTableIfNotExit()
-  upload_drug_info_data()
-  upload_quiz_data()
-
-  session.commit()
+  uploadDrugInfoData()
+  uploadQuizQuestion()
+  uploadQuizOption()
   session.close()
   print("Script Completed ...")
 
 session = Session()
 run_script()
+#session.close()
 
   
 
