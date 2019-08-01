@@ -9,6 +9,7 @@ from .models import DrugInformation
 from .models import DrugQuizQuestion
 from .models import DrugQuizOption
 from .models import DrugKeyword
+from .models import DrugInformationKeyword
 
 admin.site.register(DrugClass)
 admin.site.register(DrugSubClass)
@@ -18,3 +19,4 @@ admin.site.register(DrugInformation)
 admin.site.register(DrugQuizQuestion)
 admin.site.register(DrugQuizOption)
 admin.site.register(DrugKeyword)
+admin.site.register(DrugInformationKeyword)

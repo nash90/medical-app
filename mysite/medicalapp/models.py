@@ -44,6 +44,15 @@ class DrugInformationType(models.Model):
   def __str__(self):
     return self.drug_information_type
 
+class DrugKeyword(models.Model):
+  class Meta:
+    db_table = "drug_keyword"
+  keyword_id = models.AutoField(primary_key=True)
+  keyword = models.CharField(max_length=256)
+
+  def __str__(self):
+    return self.keyword
+
 class DrugInformation(models.Model):
   class Meta:
     db_table = "drug_information"
@@ -53,18 +62,20 @@ class DrugInformation(models.Model):
   information = models.CharField(max_length=1024)
   scrabble_hint = models.CharField(max_length=1024)
   keyword_bk = models.CharField(max_length=1024)
+  keyword = models.ManyToManyField(DrugKeyword, through='DrugInformationKeyword')
 
   def __str__(self):
     return str(self.drug.drug_id) + " : " + str(self.drug_info_type.drug_info_type_id) + " : " + self.information
 
-class DrugKeyword(models.Model):
+class DrugInformationKeyword(models.Model):
   class Meta:
-    db_table = "drug_keyword"
-  keyword_id = models.AutoField(primary_key=True)
-  keyword = models.CharField(max_length=256)
+    db_table = "drug_info_keyword"
+  relation_id = models.AutoField(primary_key=True)
+  drug_info = models.ForeignKey(DrugInformation, on_delete= models.CASCADE)
+  keyword = models.ForeignKey(DrugKeyword, on_delete= models.CASCADE)
 
   def __str__(self):
-    return self.keyword
+    return str(self.drug_info.drug_info_id) + " : " + str(self.keyword.keyword)
 
 class DrugQuizQuestion(models.Model):
   class Meta:

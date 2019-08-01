@@ -33,7 +33,8 @@ class DrugInformationType(Base):
   game_level = Column('game_level', Integer)
   drug_information = relationship("DrugInformation", back_populates="drug_info_type")
 
-keyword_association_table = Table('keyword_drug_info', Base.metadata,
+keyword_association_table = Table('drug_info_keyword', Base.metadata,
+  Column('relation_id', Integer, primary_key=True),
   Column('drug_info_id', Integer, ForeignKey('drug_information.drug_info_id')),
   Column('keyword_id', Integer, ForeignKey('drug_keyword.keyword_id'))
 ) 
