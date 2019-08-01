@@ -29,7 +29,7 @@ class Drug(Base):
 class DrugInformationType(Base):
   __tablename__ = 'drug_information_type'
   drug_info_type_id = Column('drug_info_type_id', Integer, primary_key=True)
-  drug_information_type = Column('drug_information_type', String(32))
+  drug_information_type = Column('drug_information_type', String(50))
   game_level = Column('game_level', Integer)
   drug_information = relationship("DrugInformation", back_populates="drug_info_type")
 
