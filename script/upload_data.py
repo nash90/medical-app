@@ -293,7 +293,7 @@ def uploadQuizOption():
     try:
       updateQuizOption(row)
     except Exception as e:
-      print(str(type(e)) + ": Failed to upload quiz option :", str(row[Drug_Quiz_Id]) + " - " +row[Drug_Quiz_Option])
+      print(str(type(e)) + ": Failed to upload quiz option :", str(row[Drug_Quiz_Id]) + " - " +str(row[Drug_Quiz_Option]))
   print("Processed Drug Quiz Option sheet")
 
 def run_script():
