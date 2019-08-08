@@ -155,7 +155,7 @@ def updateDrug(row):
   drug_subclass_name = strip(row[Drug_SubClass])
   drug_subclass_id = getIDFromDB(drug_subclass_name, DrugSubClass)
   #print("debug", drug_subclass_id)
-  drug_name = strip(row[Drug_Name])
+  drug_name = strip(row[Drug_Name]).lower()
   black_box_warning = strip(row[BB_Warning])
 
   new_item = Drug(drug_subclass_id=drug_subclass_id, drug_name = drug_name, black_box_warning=black_box_warning)
@@ -177,7 +177,7 @@ def getKeywordBackup(row):
   
 
 def updateDrugInformation(row):
-  drug_name = strip(row[Drug_Name])
+  drug_name = strip(row[Drug_Name]).lower()
   drug_id = getIDFromDB(drug_name, Drug)
   drug_information_type = strip(row[Drug_Information_Type])
   drug_info_type_id = getIDFromDB(drug_information_type, DrugInformationType)
@@ -195,7 +195,7 @@ def updateDrugInformation(row):
   
 
 def updateDrugKeyword(row):
-  drug_name = strip(row[Drug_Name])
+  drug_name = strip(row[Drug_Name]).lower()
   drug_info_type = strip(row[Drug_Information_Type])
   drug_information = strip(row[Drug_Information])
   #drug_keyword = row[Keyword]
@@ -228,13 +228,13 @@ def updateDrugKeyword(row):
   
 def updateQuizQuestion(row):
   drug_quiz_id = int(row[Drug_Quiz_Id])
-  drug_name = strip(row[Drug_Name])
+  drug_name = strip(row[Drug_Name]).lower()
   drug_information_type = strip(row[Drug_Information_Type])
   quiz_question = strip(row[Quiz_Question])
   quiz_type = strip(row[Quiz_Type])
 
   if isNan(drug_name) == False and isNan(drug_information_type) == False and isNan(quiz_question) == False and isNan(quiz_type) == False:
-    drug_name = drug_name.lower()
+    drug_name = drug_name
     
     drug = session.query(Drug).filter(
       Drug.drug_name == drug_name
@@ -268,8 +268,8 @@ def updateQuizOption(row):
 
 def uploadDrugInfoData():
   for index, row in df_drug_info.iterrows():
-    if index>900:
-      break  
+    #if index>900:
+    #  break  
     updateDrugClass(row) 
     updateDrugSubClass(row)
     updateDrugInformationType(row)
