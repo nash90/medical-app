@@ -4,9 +4,11 @@ from rest_framework import routers
 
 from . import views
 from .api.viewset import DrugViewSet
+from .api.viewset import DrugInfoViewSet
 
 router = routers.DefaultRouter()
 router.register(r'api/drugs', DrugViewSet)
+router.register(r'api/druginfo', DrugInfoViewSet)
 
 urlpatterns = [
     path('', views.index, name='index'),
