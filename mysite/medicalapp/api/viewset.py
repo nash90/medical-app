@@ -1,3 +1,4 @@
+import random
 from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework.decorators import action
@@ -7,8 +8,12 @@ from rest_framework import renderers
 
 from ..models import Drug
 from ..models import DrugInformation
+from ..models import DrugKeyword
+
 from .serializer import DrugSerializer
 from .serializer import DrugInfoSerializer
+from .serializer import DrugKeywordSerializer
+from .serializer import GameKeywordSerializer
 
 class DrugViewSet(viewsets.ModelViewSet):
     queryset = Drug.objects.all()
@@ -39,3 +44,32 @@ class DrugInfoViewSet(viewsets.GenericViewSet):
     serializer_class = DrugInfoSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     http_method_names = ['get']
+
+class KeywordViewSet(viewsets.ModelViewSet):
+    queryset = DrugKeyword.objects.all()
+    serializer_class = DrugKeywordSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    http_method_names = ['get']
+
+    @action(detail=True)
+    def game(self, request, pk=0):
+        keyword = DrugKeyword.objects.get(keyword_id=pk)
+        data = {
+            "keyword": keyword,
+            "game_keyword": keywordScrabble(keyword.keyword)
+        }
+        
+        serializer = GameKeywordSerializer(data)
+        return Response(serializer.data)
+
+
+### Helper Functions
+def keywordScrabble(keyword):
+    new_key = ""
+    for item in keyword:
+        a = random.choice([True, False])
+        if item != " " and a == False:
+            new_key = new_key + "*"
+        else:
+            new_key = new_key + item
+    return new_key

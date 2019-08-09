@@ -28,7 +28,7 @@ class DrugSerializer(serializers.HyperlinkedModelSerializer):
         model = Drug
         fields = ['drug_id', 'drug_subclass', 'drug_name', 'black_box_warning']
 
-class DrugKeyword(serializers.ModelSerializer):
+class DrugKeywordSerializer(serializers.ModelSerializer):
     class Meta:
         model = DrugKeyword
         fields = ['keyword_id', 'keyword']
@@ -36,8 +36,11 @@ class DrugKeyword(serializers.ModelSerializer):
 class DrugInfoSerializer(serializers.ModelSerializer):
     drug = DrugSerializer(read_only=True)
     drug_info_type = DrugInfoTypeSerializer(read_only=True)
-    keyword = DrugKeyword(many=True, read_only=True)
+    keyword = DrugKeywordSerializer(many=True, read_only=True)
     class Meta:
         model = DrugInformation
         fields = ['drug_info_id', 'drug', 'drug_info_type', 'information', 'scrabble_hint', 'keyword']
 
+class GameKeywordSerializer(serializers.Serializer):
+    keyword = DrugKeywordSerializer(read_only=True)
+    game_keyword = serializers.CharField(max_length=200)
