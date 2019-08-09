@@ -176,7 +176,7 @@ def getKeywordBackup(row):
   return "; ".join(keywords)
   
 
-def updateDrugInformation(row):
+def updateDrugInformation(row, index):
   drug_name = strip(row[Drug_Name]).lower()
   drug_id = getIDFromDB(drug_name, Drug)
   drug_information_type = strip(row[Drug_Information_Type])
@@ -191,7 +191,7 @@ def updateDrugInformation(row):
   if isNan(information) == False:
     session.add(new_item)
   else:
-    print("Could not insert Information: " + str(drug_name) + str(drug_information_type) + str(information))
+    print("Could not insert Information: " + str(index+2) + " : " + str(drug_name) + " "+ str(drug_information_type) + " "+ str(information))
   
 
 def updateDrugKeyword(row):
@@ -246,7 +246,11 @@ def updateQuizQuestion(row):
 
     drug_information = session.query(DrugInformationType).filter(
       DrugInformationType.drug_information_type == drug_information_type
-    ).all()[0]
+    ).all()
+
+    if len(drug_information) == 0:
+      raise Exception('Could not find Drug Information Type :'+drug_information_type)
+    drug_information = drug_information[0]
 
     drug_id = drug.drug_id
     drug_info_type_id = drug_information.drug_info_type_id
@@ -274,7 +278,7 @@ def uploadDrugInfoData():
     updateDrugSubClass(row)
     updateDrugInformationType(row)
     updateDrug(row)
-    updateDrugInformation(row)
+    updateDrugInformation(row, index)
     updateDrugKeyword(row)
   session.commit()
   print("Processed Drug Information sheet")
@@ -285,7 +289,7 @@ def uploadQuizQuestion():
       updateQuizQuestion(row)
     except Exception as e:
       print(e)
-      #print(traceback.format_exc())
+      print(traceback.format_exc())
   print("Processed Drug Question sheet")
 
 def uploadQuizOption():
