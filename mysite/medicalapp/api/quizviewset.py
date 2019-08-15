@@ -52,10 +52,10 @@ class DrugQuizViewSet(viewsets.ModelViewSet):
     @action(detail=True)
     def answer(self, request, pk=0):
         params = request.query_params
-        answer = int(params["answer"])
+        answer = int(params["option"])
         res = {
             "correct":False,
-            "correct_quiz_id":None
+            "correct_option_id":None
         }
         if(answer != None):
             correct_answer = DrugQuizOption.objects.filter(quiz__drug_quiz_id=pk).filter(correct_flag=True)
@@ -63,7 +63,7 @@ class DrugQuizViewSet(viewsets.ModelViewSet):
             correct_id = correct_answer.quiz_option_id
             if (correct_id) == answer:
                 res["correct"] = True
-            res["correct_quiz_id"] = correct_id
+            res["correct_option_id"] = correct_id
             
         return Response(res)      
 

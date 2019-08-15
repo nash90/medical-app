@@ -33,10 +33,10 @@ class DrugInformationAdmin(CustomModelAdminMixin, admin.ModelAdmin):
   search_fields = ('drug__drug_name','drug_info_type__drug_information_type','information',)   
 
 class DrugQuizQuestionAdmin(CustomModelAdminMixin, admin.ModelAdmin):
-  search_fields = ('quiz_question',)   
+  search_fields = ('quiz_question', 'drug__drug_name', 'drug_info_type__drug_information_type')   
 
 class DrugQuizOptionAdmin(CustomModelAdminMixin, admin.ModelAdmin):
-  search_fields = ('quiz_option',)    
+  search_fields = ('quiz_option','quiz__drug_quiz_id', 'quiz__quiz_question')    
 
 class DrugKeywordAdmin(CustomModelAdminMixin, admin.ModelAdmin):
   search_fields = ('drug_keyword',)  
