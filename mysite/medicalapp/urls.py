@@ -6,11 +6,13 @@ from . import views
 from .api.viewset import DrugViewSet
 from .api.viewset import DrugInfoViewSet
 from .api.viewset import KeywordViewSet
+from .api.quizviewset import DrugQuizViewSet
 
 router = routers.DefaultRouter()
 router.register(r'api/drugs', DrugViewSet)
-router.register(r'api/druginfo', DrugInfoViewSet)
+#router.register(r'api/druginfo', DrugInfoViewSet)
 router.register(r'api/keys', KeywordViewSet)
+router.register(r'api/quiz', DrugQuizViewSet)
 
 urlpatterns = [
     path('', views.index, name='index'),
