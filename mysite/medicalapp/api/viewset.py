@@ -62,6 +62,20 @@ class KeywordViewSet(viewsets.ModelViewSet):
         serializer = GameKeywordSerializer(data)
         return Response(serializer.data)
 
+    @action(detail=True)
+    def answer(self, request, pk=0):
+        params = request.query_params
+        answer = params["answer"]
+        res = {
+            "correct":False
+        }
+        if(answer != None):
+            keyword_obj = DrugKeyword.objects.get(keyword_id=pk)
+            if (answer.lower() == keyword_obj.keyword.lower()):
+                res["correct"] = True
+        return Response(res)
+
+
 
 ### Helper Functions
 def keywordScrabble(keyword):
