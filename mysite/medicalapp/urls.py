@@ -1,6 +1,7 @@
 from django.conf.urls import url, include
 from django.urls import path
 from rest_framework import routers
+from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
 from . import views
 from .api.viewset import DrugViewSet
@@ -17,5 +18,7 @@ router.register(r'api/quiz', DrugQuizViewSet)
 urlpatterns = [
     path('', views.index, name='index'),
     url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))  
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path(r'api-token-auth/', obtain_jwt_token),
+    path(r'api-token-refresh/', refresh_jwt_token),
 ]
