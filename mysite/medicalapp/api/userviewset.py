@@ -8,12 +8,13 @@ from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework import renderers
 from django.shortcuts import get_object_or_404
+from rest_framework_jwt.views import ObtainJSONWebToken
 
-from django.conf import settings
 from django.contrib.auth.models import User
 from ..models import Profile
 
 from .serializer import ProfileSerializer
+from .serializer import JWTSerializer
 
 class UserViewSet(APIView):
   queryset = User.objects.all()
@@ -26,7 +27,8 @@ class UserViewSet(APIView):
     else:
       return Response(serializer.errors)
 
-
+class ObtainJWTView(ObtainJSONWebToken):
+    serializer_class = JWTSerializer
 
 
 

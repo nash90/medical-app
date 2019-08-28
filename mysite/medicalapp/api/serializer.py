@@ -1,4 +1,8 @@
 from rest_framework import serializers
+from django.contrib.auth import authenticate, user_logged_in
+from rest_framework_jwt.serializers import JSONWebTokenSerializer, jwt_payload_handler, jwt_encode_handler
+
+
 from django.contrib.auth.models import User
 from ..models import DrugClass
 from ..models import DrugSubClass
@@ -85,10 +89,50 @@ class ProfileSerializer(serializers.ModelSerializer):
         user_form = validated_data['user']
         user = User.objects.create(
             username = user_form['username'],
-            password = hashers.make_password(settings.STATIC_PW) # Stakeholder requested for login without PW
+            password = hashers.make_password(settings.STATIC_PW) # Stakeholder wanted login without PW
         )
         Profile.objects.create(
             user=user, 
             date_of_birth = validated_data['date_of_birth']
             )
         return validated_data
+
+class JWTSerializer(JSONWebTokenSerializer):
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=False)
+    year_of_birth = serializers.CharField(required=True) 
+
+    def validate(self, attrs):
+        credentials = {
+            self.username_field: attrs.get(self.username_field),
+            'password' : settings.STATIC_PW # Stakeholder wanted login without PW      
+        }
+        print(credentials)
+        if all(credentials.values()):
+            user = authenticate(request=self.context['request'], **credentials)
+
+            if user:
+                if not user.is_active:
+                    msg = 'User account is disabled.'
+                    raise serializers.ValidationError(msg)
+                profile = Profile.objects.get(user_id = user.id)
+                print(profile.date_of_birth.year)
+                print(attrs.get('year_of_birth'))
+                if profile.date_of_birth.year != int(attrs.get('year_of_birth')):
+                    msg = 'Incorrect login information provided'
+                    raise serializers.ValidationError(msg)
+
+                payload = jwt_payload_handler(user)
+                user_logged_in.send(sender=user.__class__, request=self.context['request'], user=user)
+
+                return {
+                    'token': jwt_encode_handler(payload),
+                    'user': user
+                }
+            else:
+                msg = 'Unable to log in with provided credentials.'
+                raise serializers.ValidationError(msg)
+        else:
+            msg = 'Must include "{username_field}" and "password".'
+            msg = msg.format(username_field=self.username_field)
+            raise serializers.ValidationError(msg)
