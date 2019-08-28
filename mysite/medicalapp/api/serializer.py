@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.contrib.auth.models import User
 from ..models import DrugClass
 from ..models import DrugSubClass
 from ..models import DrugInformationType
@@ -7,6 +8,10 @@ from ..models import DrugInformation
 from ..models import DrugKeyword
 from ..models import DrugQuizQuestion
 from ..models import DrugQuizOption
+from ..models import Profile
+from django.contrib.auth import hashers
+
+from django.conf import settings
 
 class DrugClassSerializer(serializers.ModelSerializer):
     class Meta:
@@ -63,3 +68,27 @@ class DrugQuizSerializer(serializers.ModelSerializer):
 class DrugQuizDetailSerializer(serializers.Serializer):
     drug_quiz = DrugQuizSerializer(read_only=True)
     quiz_option = DrugQuizOption(many=True, read_only=True)
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username']
+
+class ProfileSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+
+    class Meta:
+        model = Profile
+        fields = ['date_of_birth', 'user']
+    
+    def create(self, validated_data):
+        user_form = validated_data['user']
+        user = User.objects.create(
+            username = user_form['username'],
+            password = hashers.make_password(settings.STATIC_PW) # Stakeholder requested for login without PW
+        )
+        Profile.objects.create(
+            user=user, 
+            date_of_birth = validated_data['date_of_birth']
+            )
+        return validated_data

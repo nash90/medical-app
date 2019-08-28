@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 
 class DrugClass(models.Model):
   class Meta:
+    managed = False
     db_table = "drug_class"
   drug_class_id = models.AutoField(primary_key=True)
   drug_class_name = models.CharField(max_length=50)
@@ -14,6 +15,7 @@ class DrugClass(models.Model):
 
 class DrugSubClass(models.Model):
   class Meta:
+    managed = False
     db_table = "drug_subclass"  
   drug_subclass_id = models.AutoField(primary_key=True)
   drug_class = models.ForeignKey(DrugClass, null=True, on_delete=models.SET_NULL)
@@ -25,6 +27,7 @@ class DrugSubClass(models.Model):
 
 class Drug(models.Model):
   class Meta:
+    managed = False
     db_table = "drug"
   drug_id = models.AutoField(primary_key=True)
   drug_subclass = models.ForeignKey(DrugSubClass, null=True, on_delete=models.SET_NULL)
@@ -36,6 +39,7 @@ class Drug(models.Model):
 
 class DrugInformationType(models.Model):
   class Meta:
+    managed = False
     db_table = "drug_information_type"
   drug_info_type_id = models.AutoField(primary_key=True)
   drug_information_type = models.CharField(max_length=50)
@@ -46,6 +50,7 @@ class DrugInformationType(models.Model):
 
 class DrugKeyword(models.Model):
   class Meta:
+    managed = False
     db_table = "drug_keyword"
   keyword_id = models.AutoField(primary_key=True)
   keyword = models.CharField(max_length=256)
@@ -55,6 +60,7 @@ class DrugKeyword(models.Model):
 
 class DrugInformation(models.Model):
   class Meta:
+    managed = False
     db_table = "drug_information"
   drug_info_id = models.AutoField(primary_key=True)
   drug = models.ForeignKey(Drug, null=True, on_delete=models.SET_NULL)
@@ -69,6 +75,7 @@ class DrugInformation(models.Model):
 
 class DrugInformationKeyword(models.Model):
   class Meta:
+    managed = False
     db_table = "drug_info_keyword"
   relation_id = models.AutoField(primary_key=True)
   drug_info = models.ForeignKey(DrugInformation, on_delete= models.CASCADE)
@@ -79,6 +86,7 @@ class DrugInformationKeyword(models.Model):
 
 class DrugQuizQuestion(models.Model):
   class Meta:
+    managed = False
     db_table = "drug_quiz_question"
   drug_quiz_id = models.AutoField(primary_key=True)
   drug = models.ForeignKey(Drug, null=True, on_delete=models.SET_NULL)
@@ -92,6 +100,7 @@ class DrugQuizQuestion(models.Model):
 
 class DrugQuizOption(models.Model):
   class Meta:
+    managed = False
     db_table = "drug_quiz_option"
   quiz_option_id = models.AutoField(primary_key=True)
   quiz = models.ForeignKey(DrugQuizQuestion, null=True, on_delete=models.SET_NULL)
@@ -100,3 +109,10 @@ class DrugQuizOption(models.Model):
 
   def __str__(self):
     return str(self.quiz.drug_quiz_id) + " : " + self.quiz_option
+
+class Profile(models.Model):
+  class Meta:
+    db_table = 'profile'
+  profile_id = models.AutoField(primary_key=True)
+  user = models.OneToOneField(User, on_delete=models.CASCADE)
+  date_of_birth = models.DateField()

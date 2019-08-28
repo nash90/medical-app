@@ -8,12 +8,14 @@ from .api.viewset import DrugViewSet
 from .api.viewset import DrugInfoViewSet
 from .api.viewset import KeywordViewSet
 from .api.quizviewset import DrugQuizViewSet
+from .api.userviewset import UserViewSet
 
 router = routers.DefaultRouter()
 router.register(r'api/drugs', DrugViewSet)
 #router.register(r'api/druginfo', DrugInfoViewSet)
 router.register(r'api/keys', KeywordViewSet)
 router.register(r'api/quiz', DrugQuizViewSet)
+#router.register(r'api/user', UserViewSet)
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -21,4 +23,5 @@ urlpatterns = [
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path(r'api-token-auth/', obtain_jwt_token),
     path(r'api-token-refresh/', refresh_jwt_token),
+    path(r'api/user/', UserViewSet.as_view())
 ]
