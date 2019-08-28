@@ -22,7 +22,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-    path(r'api-token-auth/', ObtainJWTView.as_view()),
+    path(r'api/login/', ObtainJWTView.as_view()),
     path(r'api-token-refresh/', refresh_jwt_token),
-    path(r'api/user/', UserViewSet.as_view())
+    path(r'api/register/', UserViewSet.as_view())
 ]
