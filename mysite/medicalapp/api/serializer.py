@@ -118,7 +118,7 @@ class JWTSerializer(JSONWebTokenSerializer):
                 profile = Profile.objects.get(user_id = user.id)
                 print(profile.date_of_birth.year)
                 print(attrs.get('year_of_birth'))
-                if profile.date_of_birth.year != int(attrs.get('year_of_birth')):
+                if str(profile.date_of_birth.year) != attrs.get('year_of_birth'):
                     msg = 'Incorrect login information provided'
                     raise serializers.ValidationError(msg)
 
