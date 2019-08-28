@@ -140,7 +140,7 @@ REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
@@ -164,3 +164,5 @@ CORS_ORIGIN_REGEX_WHITELIST = [
     'http://localhost:4200',
     'http://172.28.97.87:8100'
 ]
+
+STATIC_PW = "test1234"
