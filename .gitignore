@@ -13,3 +13,4 @@ Pipfile.lock
 app/medical-app/migrations
 app/htmlcov
 app/static
+*.code-workspace
