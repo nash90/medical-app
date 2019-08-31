@@ -10,8 +10,9 @@ from rest_framework import renderers
 from django.shortcuts import get_object_or_404
 from rest_framework_jwt.views import ObtainJSONWebToken
 
-from django.contrib.auth.models import User
-from ..models import Profile
+from django.contrib import auth
+User = auth.get_user_model()
+from ..myuser import Profile
 
 from .serializer import ProfileSerializer
 from .serializer import JWTSerializer

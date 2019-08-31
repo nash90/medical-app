@@ -3,7 +3,8 @@ from django.contrib.auth import authenticate, user_logged_in
 from rest_framework_jwt.serializers import JSONWebTokenSerializer, jwt_payload_handler, jwt_encode_handler
 
 
-from django.contrib.auth.models import User
+from django.contrib import auth
+User = auth.get_user_model()
 from ..models import DrugClass
 from ..models import DrugSubClass
 from ..models import DrugInformationType
@@ -12,7 +13,7 @@ from ..models import DrugInformation
 from ..models import DrugKeyword
 from ..models import DrugQuizQuestion
 from ..models import DrugQuizOption
-from ..models import Profile
+from ..myuser import Profile
 from django.contrib.auth import hashers
 
 from django.conf import settings
@@ -76,7 +77,7 @@ class DrugQuizDetailSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username']
+        fields = ['email']
 
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()
@@ -88,7 +89,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user_form = validated_data['user']
         user = User.objects.create(
-            username = user_form['username'],
+            email = user_form['email'],
             password = hashers.make_password(settings.STATIC_PW) # Stakeholder wanted login without PW
         )
         Profile.objects.create(
@@ -98,7 +99,6 @@ class ProfileSerializer(serializers.ModelSerializer):
         return validated_data
 
 class JWTSerializer(JSONWebTokenSerializer):
-    username = serializers.CharField(required=True)
     password = serializers.CharField(required=False)
     year_of_birth = serializers.CharField(required=True) 
 
@@ -107,7 +107,7 @@ class JWTSerializer(JSONWebTokenSerializer):
             self.username_field: attrs.get(self.username_field),
             'password' : settings.STATIC_PW # Stakeholder wanted login without PW      
         }
-        print(credentials)
+
         if all(credentials.values()):
             user = authenticate(request=self.context['request'], **credentials)
 
