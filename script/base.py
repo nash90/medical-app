@@ -11,8 +11,9 @@ db_type = settings["db_type"]
 username = settings["db_username"]
 password = settings["db_password"]
 full_url = db_type+'://'+username+':'+password + '@'+ url
-if not database_exists(url):
-    create_database(url)
 engine = create_engine(full_url)
+if not database_exists(engine.url):
+    create_database(engine.url)
+#engine = create_engine(full_url)
 Session = sessionmaker(bind=engine)
 Base = declarative_base()
