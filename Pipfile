@@ -8,12 +8,13 @@ verify_ssl = true
 [packages]
 sqlalchemy = "*"
 pandas = "*"
-psycopg2 = "*"
 xlrd = "*"
 django = "*"
 djangorestframework = "*"
 django-cors-headers = "*"
 djangorestframework-jwt = "*"
+psycopg2-binary = "*"
+sqlalchemy-utils = "*"
 
 [requires]
 python_version = "3.7"
