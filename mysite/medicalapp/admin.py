@@ -1,4 +1,8 @@
 from django.contrib import admin
+from django import forms
+from django.contrib.auth import hashers
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
 # Register your models here.
 from .models import MyUser
@@ -18,8 +22,54 @@ class CustomModelAdminMixin(object):
       self.list_display = [field.name for field in model._meta.fields if field.name != "id"]
       super(CustomModelAdminMixin, self).__init__(model, admin_site)
 
-class MyUserClassAdmin(CustomModelAdminMixin, admin.ModelAdmin):
+class UserCreationForm(forms.ModelForm):
+    class Meta:
+        model = MyUser
+        fields = ('email', 'password', 'is_superuser', 'is_staff')
+
+    def save(self, commit=True):
+        # Save the provided password in hashed format
+        user = super(UserCreationForm, self).save(commit=False)
+        user.set_password(self.cleaned_data["password"])
+        if commit:
+            user.save()
+        return user
+
+class UserChangeForm(forms.ModelForm):
+    """A form for updating users. Includes all the fields on
+    the user, but replaces the password field with admin's
+    password hash display field.
+    """
+    password = ReadOnlyPasswordHashField()
+
+    class Meta:
+        model = MyUser
+        fields = ('email', 'password', 'is_superuser', 'is_staff')
+
+    def clean_password(self):
+        # Regardless of what the user provides, return the initial value.
+        # This is done here, rather than on the field, because the
+        # field does not have access to the initial value
+        return self.initial["password"]
+
+class MyUserClassAdmin(CustomModelAdminMixin, UserAdmin):
+  model = MyUser
+  form = UserChangeForm
+  add_form = UserCreationForm
+  list_display = ('email', 'password', 'is_superuser', 'is_staff', 'is_active')
   search_fields = ('email',) 
+
+  fieldsets = (
+      (None, {'fields': ('email', 'password', 'is_superuser', 'is_staff', 'is_active')}),
+  )
+
+  add_fieldsets = (
+      (None, {
+          'classes': ('wide',),
+          'fields': ('email', 'password','is_superuser', 'is_staff')}
+      ),
+  )
+  ordering = ('email',)
 
 class DrugClassAdmin(CustomModelAdminMixin, admin.ModelAdmin):
   search_fields = ('drug_class_name',) 
