@@ -1,6 +1,6 @@
 import os
 from django.db import models
-#from django.contrib.auth import hashers
+
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 
 class MyUserManager(BaseUserManager):
@@ -9,7 +9,6 @@ class MyUserManager(BaseUserManager):
             raise ValueError('Email must be set')
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
-        #password = hashers.make_password(password)
         user.set_password(password)
         user.save()
         return user
@@ -18,7 +17,7 @@ class MyUserManager(BaseUserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
-        #password = hashers.make_password(password)
+
         if extra_fields.get('is_staff') is not True:
             raise ValueError('Superuser must have is_staff=True.')
         if extra_fields.get('is_superuser') is not True:
