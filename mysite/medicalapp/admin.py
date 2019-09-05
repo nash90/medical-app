@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
+from .models import MyUser
 from .models import DrugClass
 from .models import DrugSubClass
 from .models import Drug
@@ -16,6 +17,9 @@ class CustomModelAdminMixin(object):
   def __init__(self, model, admin_site):
       self.list_display = [field.name for field in model._meta.fields if field.name != "id"]
       super(CustomModelAdminMixin, self).__init__(model, admin_site)
+
+class MyUserClassAdmin(CustomModelAdminMixin, admin.ModelAdmin):
+  search_fields = ('email',) 
 
 class DrugClassAdmin(CustomModelAdminMixin, admin.ModelAdmin):
   search_fields = ('drug_class_name',) 
@@ -44,7 +48,8 @@ class DrugKeywordAdmin(CustomModelAdminMixin, admin.ModelAdmin):
 class DrugInformationKeywordAdmin(CustomModelAdminMixin, admin.ModelAdmin):
   search_fields = ('drug_info__drug_name','keyword__drug_keyword')  
 
-  
+
+admin.site.register(MyUser, MyUserClassAdmin)  
 admin.site.register(DrugClass, DrugClassAdmin)
 admin.site.register(DrugSubClass, DrugSubClassAdmin)
 admin.site.register(Drug, DrugAdmin)
