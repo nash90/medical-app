@@ -1,10 +1,11 @@
 import os
 
+url = os.environ['PSQL_DB_HOST'] + ':5432/' + os.environ['PSQL_DB_NAME']
 settings = {
   "db_type":"postgresql",
-  "db_url":"localhost:5432/medicaldb",
-  "db_username":"test_user",
-  "db_password":"test1234",
+  "db_url": url,
+  "db_username": os.environ['PSQL_DB_USER'],
+  "db_password": os.environ['PSQL_DB_PWD'],
   "file_src":"./data/Cardio and Mental Drug Game.xlsx",
   "drug_info_sheet_name":"Project",
   "quiz_sheet_name":"Drug Quiz Question",
