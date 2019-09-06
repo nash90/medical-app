@@ -42,6 +42,7 @@ Drug_Option = "Drug_Option"
 Correct_Answer_Flag = "Correct_Answer_Flag"
 Drug_Quiz_Option = "Drug_Quiz_Option"
 Enable = "Enable"
+Rational = "Rational"
 
 file = settings['file_src']
 drug_info_sheet_name = settings['drug_info_sheet_name']
@@ -265,9 +266,10 @@ def updateQuizOption(row):
   drug_quiz_option = row[Drug_Quiz_Option]
   correct_answer = row[Correct_Answer_Flag]
   correct_answer_flag = True if type(correct_answer) == str and correct_answer.lower() == "correct" else False
+  rational = row[Rational]
 
   if isNan(quiz_id) == False and isNan(drug_quiz_option) == False and isNan(correct_answer_flag) == False:
-    new_item = DrugQuizOption(quiz_id=quiz_id, quiz_option=drug_quiz_option, correct_flag=correct_answer_flag)
+    new_item = DrugQuizOption(quiz_id=quiz_id, quiz_option=drug_quiz_option, correct_flag=correct_answer_flag, rational=rational)
     addDataToDB(new_item)
 
 def uploadDrugInfoData():

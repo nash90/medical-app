@@ -76,5 +76,6 @@ class DrugQuizOption(Base):
   quiz_id = Column('quiz_id', Integer, ForeignKey('drug_quiz_question.drug_quiz_id'))
   quiz_option = Column('quiz_option', String(200))
   correct_flag = Column('correct_flag', Boolean)
+  rational = Column('rational', String(500))
   drug_quiz_question = relationship("DrugQuizQuestion", back_populates="drug_quiz_option")
 
