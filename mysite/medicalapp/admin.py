@@ -15,6 +15,7 @@ from .models import DrugQuizQuestion
 from .models import DrugQuizOption
 from .models import DrugKeyword
 from .models import DrugInformationKeyword
+from .myuser import Profile
 
 class CustomModelAdminMixin(object):
 
@@ -98,6 +99,9 @@ class DrugKeywordAdmin(CustomModelAdminMixin, admin.ModelAdmin):
 class DrugInformationKeywordAdmin(CustomModelAdminMixin, admin.ModelAdmin):
   search_fields = ('drug_info__drug_name','keyword__drug_keyword')  
 
+class ProfileAdmin(CustomModelAdminMixin, admin.ModelAdmin):
+  search_fields = ('user__email','date_of_birth')  
+
 
 admin.site.register(MyUser, MyUserClassAdmin)  
 admin.site.register(DrugClass, DrugClassAdmin)
@@ -109,3 +113,4 @@ admin.site.register(DrugQuizQuestion, DrugQuizQuestionAdmin)
 admin.site.register(DrugQuizOption, DrugQuizOptionAdmin)
 admin.site.register(DrugKeyword, DrugKeywordAdmin)
 admin.site.register(DrugInformationKeyword, DrugInformationKeywordAdmin)
+admin.site.register(Profile, ProfileAdmin)

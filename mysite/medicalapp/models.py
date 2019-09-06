@@ -146,6 +146,7 @@ class DrugQuizOption(models.Model):
   quiz = models.ForeignKey(DrugQuizQuestion, null=True, on_delete=models.SET_NULL)
   quiz_option = models.CharField(max_length=200)
   correct_flag = models.BooleanField()
+  rational = models.CharField(max_length=500)
 
   def __str__(self):
     return str(self.quiz.drug_quiz_id) + " : " + self.quiz_option
