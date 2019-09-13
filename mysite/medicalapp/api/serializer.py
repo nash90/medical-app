@@ -136,3 +136,7 @@ class JWTSerializer(JSONWebTokenSerializer):
             msg = 'Must include "{username_field}" and "password".'
             msg = msg.format(username_field=self.username_field)
             raise serializers.ValidationError(msg)
+
+class QuizAnswerSerializer(serializers.Serializer):
+    quiz_id = serializers.IntegerField(required=True)
+    answer = serializers.IntegerField(required=True)
