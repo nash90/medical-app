@@ -16,6 +16,8 @@ from .models import DrugQuizOption
 from .models import DrugKeyword
 from .models import DrugInformationKeyword
 from .myuser import Profile
+from .models import GameBadge
+from .myuser import UserPoints
 
 class CustomModelAdminMixin(object):
 
@@ -102,6 +104,11 @@ class DrugInformationKeywordAdmin(CustomModelAdminMixin, admin.ModelAdmin):
 class ProfileAdmin(CustomModelAdminMixin, admin.ModelAdmin):
   search_fields = ('user__email','date_of_birth')  
 
+class PointsAdmin(CustomModelAdminMixin, admin.ModelAdmin):
+  search_fileds = ('user__email')
+
+class BadgeAdmin(CustomModelAdminMixin, admin.ModelAdmin):
+  search_fileds = ('name')
 
 admin.site.register(MyUser, MyUserClassAdmin)  
 admin.site.register(DrugClass, DrugClassAdmin)
@@ -114,3 +121,5 @@ admin.site.register(DrugQuizOption, DrugQuizOptionAdmin)
 admin.site.register(DrugKeyword, DrugKeywordAdmin)
 admin.site.register(DrugInformationKeyword, DrugInformationKeywordAdmin)
 admin.site.register(Profile, ProfileAdmin)
+admin.site.register(UserPoints, PointsAdmin)
+admin.site.register(GameBadge, BadgeAdmin)

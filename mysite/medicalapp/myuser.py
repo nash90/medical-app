@@ -20,3 +20,5 @@ class UserPoints(models.Model):
   points = models.IntegerField()
   badge = models.ForeignKey(GameBadge, null=True, on_delete=models.SET_NULL)
 
+  def __str__(self):
+    return self.user.email

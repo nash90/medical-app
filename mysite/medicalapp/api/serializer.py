@@ -1,7 +1,9 @@
 from rest_framework import serializers
 from django.contrib.auth import authenticate, user_logged_in
 from rest_framework_jwt.serializers import JSONWebTokenSerializer, jwt_payload_handler, jwt_encode_handler
+from django.contrib.auth import hashers
 
+from django.conf import settings
 
 from django.contrib import auth
 User = auth.get_user_model()
@@ -14,9 +16,8 @@ from ..models import DrugKeyword
 from ..models import DrugQuizQuestion
 from ..models import DrugQuizOption
 from ..myuser import Profile
-from django.contrib.auth import hashers
-
-from django.conf import settings
+from ..myuser import UserPoints
+from ..models import GameBadge
 
 class DrugClassSerializer(serializers.ModelSerializer):
     class Meta:
@@ -140,3 +141,15 @@ class JWTSerializer(JSONWebTokenSerializer):
 class QuizAnswerSerializer(serializers.Serializer):
     quiz_id = serializers.IntegerField(required=True)
     answer = serializers.IntegerField(required=True)
+
+class BadgeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GameBadge
+        fields = ['badge_id', 'rank', 'name', 'points']
+
+class PointsSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    badge = BadgeSerializer(read_only=True)
+    class Meta:
+        model = UserPoints
+        fields = ['user_points_id', 'user', 'points', 'badge']

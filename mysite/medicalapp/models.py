@@ -158,3 +158,6 @@ class GameBadge(models.Model):
   rank = models.IntegerField()
   name = models.CharField(max_length=100)
   points = models.IntegerField()
+
+  def __str__(self):
+    return self.name

@@ -11,12 +11,15 @@ from .api.quizviewset import DrugQuizViewSet
 from .api.quizviewset import AnswerViewSet
 from .api.userviewset import UserViewSet
 from .api.userviewset import ObtainJWTView
+from .api.viewsets.points import PointsViewSet
+from .api.viewsets.points import BadgeViewSet
 
 router = routers.DefaultRouter()
 router.register(r'api/drugs', DrugViewSet)
 #router.register(r'api/druginfo', DrugInfoViewSet)
 router.register(r'api/keys', KeywordViewSet)
 router.register(r'api/quiz', DrugQuizViewSet)
+router.register(r'api/badge', BadgeViewSet)
 #router.register(r'api/user', UserViewSet)
 
 urlpatterns = [
@@ -27,4 +30,5 @@ urlpatterns = [
     path(r'api-token-refresh/', refresh_jwt_token),
     path(r'api/register/', UserViewSet.as_view()),
     path(r'api/checkans/', AnswerViewSet.as_view()),
+    path(r'api/points/', PointsViewSet.as_view()),
 ]
