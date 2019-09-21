@@ -31,6 +31,22 @@ class UserViewSet(APIView):
 class ObtainJWTView(ObtainJSONWebToken):
     serializer_class = JWTSerializer
 
+class UserProfileViewSet(APIView):
+  permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+  def get(self, request, format=None):
+    email = request.user
+    #print(email)
+    profile = None
+    try:
+      profile = Profile.objects.get(user__email=email)
+    except Exception as e:
+      print(e)
+    if profile != None:
+      serializer = ProfileSerializer(profile)
+      return Response(serializer.data)
+    else:
+      return Response('Profile does not exist')
 
 
     

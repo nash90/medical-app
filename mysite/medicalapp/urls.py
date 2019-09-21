@@ -13,6 +13,7 @@ from .api.userviewset import UserViewSet
 from .api.userviewset import ObtainJWTView
 from .api.viewsets.points import PointsViewSet
 from .api.viewsets.points import BadgeViewSet
+from .api.userviewset import UserProfileViewSet
 
 router = routers.DefaultRouter()
 router.register(r'api/drugs', DrugViewSet)
@@ -31,4 +32,5 @@ urlpatterns = [
     path(r'api/register/', UserViewSet.as_view()),
     path(r'api/checkans/', AnswerViewSet.as_view()),
     path(r'api/points/', PointsViewSet.as_view()),
+    path(r'api/profile/', UserProfileViewSet.as_view()),
 ]

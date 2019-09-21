@@ -82,10 +82,11 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()
+    badge = GameBadge()
 
     class Meta:
         model = Profile
-        fields = ['date_of_birth', 'user']
+        fields = ['date_of_birth', 'user', 'points', 'badge']
     
     def create(self, validated_data):
         user_form = validated_data['user']
