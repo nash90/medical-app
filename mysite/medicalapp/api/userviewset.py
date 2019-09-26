@@ -18,6 +18,7 @@ from .serializer import ProfileSerializer
 from .serializer import JWTSerializer
 
 class UserViewSet(APIView):
+  authentication_classes = []
   queryset = User.objects.all()
   permission_classes = [permissions.AllowAny]
   def post(self, request, format=None):
