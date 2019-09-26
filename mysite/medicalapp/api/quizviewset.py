@@ -34,27 +34,40 @@ class DrugQuizViewSet(viewsets.ModelViewSet):
 
     @action(detail=False)
     def filter(self, request):
-      params = request.query_params
-      drug = params["drug"]
-      drug_info_type = params["drug_info_type"]
-      drug_quiz = DrugQuizQuestion.objects.filter(drug__drug_id = drug).filter(drug_info_type__drug_info_type_id = drug_info_type)
+        params = request.query_params
+        drug = params.get("drug", 0)
+        drug_info_type = params.get("drug_info_type", 0)
+        quiz_type = params.get("quiz_type", "Level")
+        if quiz_type == "End":
+            drug_quiz = DrugQuizQuestion.objects.filter(drug__drug_id = drug).filter(quiz_type = quiz_type)
+        else:
+            drug_quiz = DrugQuizQuestion.objects.filter(
+                    drug__drug_id = drug
+                ).filter(
+                    drug_info_type__drug_info_type_id = drug_info_type
+                ).filter(
+                    quiz_type = quiz_type
+                )
 
-      data_list = []
-      for item in drug_quiz:
-        quiz_option =  DrugQuizOption.objects.filter(quiz__drug_quiz_id=item.drug_quiz_id)
-        data = {
-          "drug_quiz":item,
-          "quiz_option":quiz_option
-        }
-        data_list.append(data)  
+        data_list = []
+        for item in drug_quiz:
+            quiz_option =  DrugQuizOption.objects.filter(quiz__drug_quiz_id=item.drug_quiz_id)
+            data = {
+            "drug_quiz":item,
+            "quiz_option":quiz_option
+            }
+            data_list.append(data)  
 
-      serializer = DrugQuizDetailSerializer(data_list, many=True)
-      return Response(serializer.data)
+        serializer = DrugQuizDetailSerializer(data_list, many=True)
+        return Response(serializer.data)
 
     @action(detail=True)
     def answer(self, request, pk=0):
+        """
+        not used after the bulk answer check was implemented
+        """
         params = request.query_params
-        answer = int(params["option"])
+        answer = int(params.get("option", 0))
         res = {
             "correct":False,
             "correct_option_id":None
