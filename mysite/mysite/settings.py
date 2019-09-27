@@ -151,7 +151,7 @@ REST_FRAMEWORK = {
 
 JWT_AUTH = {
     'JWT_ALLOW_REFRESH': True,
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=3600),
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=60*60*24),
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -175,3 +175,5 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_UNIQUE_EMAIL = True
 
 AUTH_USER_MODEL = 'medicalapp.MyUser'
+
+DEFAULT_QUIZ_POINT = 10

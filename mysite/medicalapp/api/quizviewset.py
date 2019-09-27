@@ -7,8 +7,11 @@ from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework import renderers
 
+from django.conf import settings
+
 from ..models import DrugQuizQuestion
 from ..models import DrugQuizOption
+from ..myuser import Profile
 
 from .serializer import DrugQuizSerializer
 from .serializer import DrugQuizDetailSerializer
@@ -88,6 +91,7 @@ class AnswerViewSet(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def post(self, request, format=None):
+        user = request.user
         serializer = QuizAnswerSerializer(data=request.data, many=True)
         result = []
         if serializer.is_valid():
@@ -108,6 +112,7 @@ class AnswerViewSet(APIView):
                 correct_id = correct_answer.quiz_option_id
                 if (correct_id) == answer:
                     res["correct"] = True
+                    updatePoints(user)
                 else:
                     wrong_answer = DrugQuizOption.objects.get(quiz_option_id=answer)
                     res["message"] = wrong_answer.rational
@@ -115,3 +120,16 @@ class AnswerViewSet(APIView):
                 result.append(res)
               
         return Response(result)
+
+## helper methods
+
+def updatePoints(user):
+    profile = Profile.objects.get(user__email=user)
+    current_points = profile.points
+    correct_points = settings.DEFAULT_QUIZ_POINT
+    if current_points == None:
+        profile.points = correct_points
+        profile.save()
+    else:
+        profile.points = current_points + correct_points
+        profile.save()
