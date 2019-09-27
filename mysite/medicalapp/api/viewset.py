@@ -5,10 +5,12 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework import renderers
+from django.conf import settings
 
 from ..models import Drug
 from ..models import DrugInformation
 from ..models import DrugKeyword
+from ..myuser import Profile
 
 from .serializer import DrugSerializer
 from .serializer import DrugInfoSerializer
@@ -64,6 +66,7 @@ class KeywordViewSet(viewsets.ModelViewSet):
 
     @action(detail=True)
     def answer(self, request, pk=0):
+        user = request.user
         params = request.query_params
         answer = params["answer"]
         res = {
@@ -73,6 +76,7 @@ class KeywordViewSet(viewsets.ModelViewSet):
             keyword_obj = DrugKeyword.objects.get(keyword_id=pk)
             if (answer.lower() == keyword_obj.keyword.lower()):
                 res["correct"] = True
+                updatePoints(user)
         return Response(res)
 
 
@@ -87,3 +91,14 @@ def keywordScrabble(keyword):
         else:
             new_key = new_key + item
     return new_key
+
+def updatePoints(user):
+    profile = Profile.objects.get(user__email=user)
+    current_points = profile.points
+    correct_points = settings.DEFAULT_QUIZ_POINT
+    if current_points == None:
+        profile.points = correct_points
+        profile.save()
+    else:
+        profile.points = current_points + correct_points
+        profile.save()
