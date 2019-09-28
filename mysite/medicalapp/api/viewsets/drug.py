@@ -19,20 +19,8 @@ class DrugViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     http_method_names = ['get']
 
-    @action(detail=False)
-    def custom(self, request):
-        data = Drug.objects.all()
-        serializer = DrugSerializer(data, many=True)
-        return Response(serializer.data)
-
     @action(detail=True)
     def info(self, request, pk=0):
-        data = DrugInformation.objects.filter(drug__drug_id=pk)
-        serializer = DrugInfoSerializer(data, many=True)
-        return Response(serializer.data)   
-    
-    @action(detail=True)
-    def gameinfo(self, request, pk=0):
         data = DrugInformation.objects.filter(drug__drug_id=pk)
         serializer = DrugInfoSerializer(data, many=True)
         return Response(serializer.data)
@@ -42,4 +30,3 @@ class DrugInfoViewSet(viewsets.GenericViewSet):
     serializer_class = DrugInfoSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     http_method_names = ['get']
-

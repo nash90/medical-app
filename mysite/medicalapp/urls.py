@@ -5,7 +5,6 @@ from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
 from . import views
 from .api.viewsets.drug import DrugViewSet
-from .api.viewsets.drug import DrugInfoViewSet
 from .api.viewsets.keyword import KeywordViewSet
 from .api.viewsets.quiz import DrugQuizViewSet
 from .api.viewsets.quiz import AnswerViewSet
