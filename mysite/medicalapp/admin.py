@@ -98,7 +98,7 @@ class DrugKeywordAdmin(CustomModelAdminMixin, admin.ModelAdmin):
   search_fields = ('drug_keyword',)  
 
 class DrugInformationKeywordAdmin(CustomModelAdminMixin, admin.ModelAdmin):
-  search_fields = ('drug_info__drug_name','keyword__drug_keyword')  
+  search_fields = ('drug_info__drug__drug_name','keyword__keyword')  
 
 class ProfileAdmin(CustomModelAdminMixin, admin.ModelAdmin):
   search_fields = ('user__email','date_of_birth')  

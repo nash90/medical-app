@@ -111,7 +111,7 @@ class DrugInformation(models.Model):
   keyword = models.ManyToManyField(DrugKeyword, through='DrugInformationKeyword')
 
   def __str__(self):
-    return str(self.drug.drug_id) + " : " + str(self.drug_info_type.drug_info_type_id) + " : " + self.information
+    return str(self.drug.drug_name) + " : " + str(self.drug_info_type.drug_information_type) + " : " + self.information
 
 class DrugInformationKeyword(models.Model):
   class Meta:
