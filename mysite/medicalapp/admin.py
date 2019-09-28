@@ -16,8 +16,7 @@ from .models import DrugQuizOption
 from .models import DrugKeyword
 from .models import DrugInformationKeyword
 from .myuser import Profile
-from .models import GameBadge
-from .myuser import UserPoints
+#from .models import GameBadge
 
 class CustomModelAdminMixin(object):
 
@@ -121,5 +120,4 @@ admin.site.register(DrugQuizOption, DrugQuizOptionAdmin)
 admin.site.register(DrugKeyword, DrugKeywordAdmin)
 admin.site.register(DrugInformationKeyword, DrugInformationKeywordAdmin)
 admin.site.register(Profile, ProfileAdmin)
-admin.site.register(UserPoints, PointsAdmin)
-admin.site.register(GameBadge, BadgeAdmin)
+#admin.site.register(GameBadge, BadgeAdmin)

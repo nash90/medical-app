@@ -151,6 +151,7 @@ class DrugQuizOption(models.Model):
   def __str__(self):
     return str(self.quiz.drug_quiz_id) + " : " + self.quiz_option
 
+"""
 class GameBadge(models.Model):
   class Meta:
     db_table = "game_badge"
@@ -161,3 +162,4 @@ class GameBadge(models.Model):
 
   def __str__(self):
     return self.name
+"""

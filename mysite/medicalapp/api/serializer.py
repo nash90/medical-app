@@ -16,8 +16,7 @@ from ..models import DrugKeyword
 from ..models import DrugQuizQuestion
 from ..models import DrugQuizOption
 from ..myuser import Profile
-from ..myuser import UserPoints
-from ..models import GameBadge
+#from ..models import GameBadge
 
 class DrugClassSerializer(serializers.ModelSerializer):
     class Meta:
@@ -82,11 +81,11 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer()
-    badge = GameBadge()
+    # badge = GameBadge()
 
     class Meta:
         model = Profile
-        fields = ['date_of_birth', 'user', 'points', 'badge']
+        fields = ['date_of_birth', 'user', 'points']
     
     def create(self, validated_data):
         user_form = validated_data['user']
@@ -143,14 +142,9 @@ class QuizAnswerSerializer(serializers.Serializer):
     quiz_id = serializers.IntegerField(required=True)
     answer = serializers.IntegerField(required=True)
 
+"""
 class BadgeSerializer(serializers.ModelSerializer):
     class Meta:
         model = GameBadge
         fields = ['badge_id', 'rank', 'name', 'points']
-
-class PointsSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
-    badge = BadgeSerializer(read_only=True)
-    class Meta:
-        model = UserPoints
-        fields = ['user_points_id', 'user', 'points', 'badge']
+"""
