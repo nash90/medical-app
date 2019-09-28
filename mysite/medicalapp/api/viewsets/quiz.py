@@ -9,13 +9,13 @@ from rest_framework import renderers
 
 from django.conf import settings
 
-from ..models import DrugQuizQuestion
-from ..models import DrugQuizOption
-from ..myuser import Profile
+from ...models import DrugQuizQuestion
+from ...models import DrugQuizOption
+from ...myuser import Profile
 
-from .serializer import DrugQuizSerializer
-from .serializer import DrugQuizDetailSerializer
-from .serializer import QuizAnswerSerializer
+from ..serializer import DrugQuizSerializer
+from ..serializer import DrugQuizDetailSerializer
+from ..serializer import QuizAnswerSerializer
 
 class DrugQuizViewSet(viewsets.ModelViewSet):
     queryset = DrugQuizQuestion.objects.all()

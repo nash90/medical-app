@@ -4,14 +4,14 @@ from rest_framework import routers
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
 from . import views
-from .api.viewset import DrugViewSet
-from .api.viewset import DrugInfoViewSet
-from .api.viewset import KeywordViewSet
-from .api.quizviewset import DrugQuizViewSet
-from .api.quizviewset import AnswerViewSet
-from .api.userviewset import UserViewSet
-from .api.userviewset import ObtainJWTView
-from .api.userviewset import UserProfileViewSet
+from .api.viewsets.drug import DrugViewSet
+from .api.viewsets.drug import DrugInfoViewSet
+from .api.viewsets.keyword import KeywordViewSet
+from .api.viewsets.quiz import DrugQuizViewSet
+from .api.viewsets.quiz import AnswerViewSet
+from .api.viewsets.user import UserViewSet
+from .api.viewsets.user import ObtainJWTView
+from .api.viewsets.user import UserProfileViewSet
 
 router = routers.DefaultRouter()
 router.register(r'api/drugs', DrugViewSet)

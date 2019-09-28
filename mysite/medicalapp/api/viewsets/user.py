@@ -12,10 +12,10 @@ from rest_framework_jwt.views import ObtainJSONWebToken
 
 from django.contrib import auth
 User = auth.get_user_model()
-from ..myuser import Profile
+from ...myuser import Profile
 
-from .serializer import ProfileSerializer
-from .serializer import JWTSerializer
+from ..serializer import ProfileSerializer
+from ..serializer import JWTSerializer
 
 class UserViewSet(APIView):
   authentication_classes = []
