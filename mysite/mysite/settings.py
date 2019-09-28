@@ -26,7 +26,7 @@ SECRET_KEY = 'cq9(p-qhn6re=6&_0cm9%z4v@6v-5v#!r58sas7qya5qg*3@ld'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost','172.28.97.87']
+ALLOWED_HOSTS = ['localhost','172.28.97.87', '3.13.165.191', 'medscrab.com']
 
 
 # Application definition
