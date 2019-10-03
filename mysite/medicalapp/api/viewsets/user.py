@@ -23,7 +23,7 @@ class UserViewSet(APIView):
   permission_classes = [permissions.AllowAny]
   def post(self, request, format=None):
     serializer = ProfileSerializer(data=request.data)
-    if serializer.is_valid():
+    if serializer.is_valid(raise_exception=True):
       serializer.save()
       return Response(serializer.data)
     else:
