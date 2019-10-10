@@ -21,11 +21,17 @@ class DrugViewSet(viewsets.ModelViewSet):
 
     @action(detail=True)
     def info(self, request, pk=0):
+        """
+        Api handler to get all the information related to a drug_id
+        """
         data = DrugInformation.objects.filter(drug__drug_id=pk)
         serializer = DrugInfoSerializer(data, many=True)
         return Response(serializer.data)
 
 class DrugInfoViewSet(viewsets.GenericViewSet):
+    """
+    Not Used at the moment, might be useful if api for modifying druginfo is needed
+    """
     queryset = DrugInformation.objects.all()
     serializer_class = DrugInfoSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]

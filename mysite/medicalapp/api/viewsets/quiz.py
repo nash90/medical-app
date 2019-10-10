@@ -25,6 +25,10 @@ class DrugQuizViewSet(viewsets.ModelViewSet):
 
     @action(detail=True)
     def info(self, request, pk=0):
+        """
+        Api Handler to get quiz information by id,
+        returns a quiz and its option
+        """
         drug_quiz = DrugQuizQuestion.objects.get(drug_quiz_id=pk)
         quiz_option = DrugQuizOption.objects.filter(quiz__drug_quiz_id=pk)
         data = {
@@ -37,6 +41,10 @@ class DrugQuizViewSet(viewsets.ModelViewSet):
 
     @action(detail=False)
     def filter(self, request):
+        """
+        Api Handler to get quizes information by drug id, drug_info_type, quiz_type
+        returns a list of quiz and its option        
+        """
         params = request.query_params
         drug = params.get("drug", 0)
         drug_info_type = params.get("drug_info_type", 0)
@@ -67,6 +75,7 @@ class DrugQuizViewSet(viewsets.ModelViewSet):
     @action(detail=True)
     def answer(self, request, pk=0):
         """
+        check answer of quiz one by one
         not used after the bulk answer check was implemented
         """
         params = request.query_params
@@ -91,6 +100,9 @@ class AnswerViewSet(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def post(self, request, format=None):
+        """
+        Api handler for checking answer of a quiz in bulk
+        """
         user = request.user
         serializer = QuizAnswerSerializer(data=request.data, many=True)
         result = []

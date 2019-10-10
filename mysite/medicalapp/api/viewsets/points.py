@@ -1,4 +1,6 @@
 """
+# Might be useful if Badge function is implemented in future
+
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework import permissions
