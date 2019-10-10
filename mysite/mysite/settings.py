@@ -152,6 +152,7 @@ REST_FRAMEWORK = {
 JWT_AUTH = {
     'JWT_ALLOW_REFRESH': True,
     'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=60*60*24),
+    'JWT_VERIFY_EXPIRATION': False # for more secure, add update expiry on active
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
