@@ -108,14 +108,19 @@ class AnswerViewSet(APIView):
                 }
                 correct_answer = DrugQuizOption.objects.filter(quiz__drug_quiz_id=quiz_id).filter(correct_flag=True)
 
-                correct_answer = correct_answer[0]
-                correct_id = correct_answer.quiz_option_id
+                correct_id = 0
+                if len(correct_answer) > 0:
+                    correct_answer = correct_answer[0]
+                    correct_id = correct_answer.quiz_option_id
+                
                 if (correct_id) == answer:
                     res["correct"] = True
                     updatePoints(user)
                 else:
                     wrong_answer = DrugQuizOption.objects.get(quiz_option_id=answer)
                     res["message"] = wrong_answer.rational
+                    if res["message"] == "NaN":
+                        res["message"] = ""
                 res["correct_option_id"] = correct_id
                 result.append(res)
               
