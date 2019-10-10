@@ -26,7 +26,7 @@ SECRET_KEY = 'cq9(p-qhn6re=6&_0cm9%z4v@6v-5v#!r58sas7qya5qg*3@ld'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost','172.28.97.87']
+ALLOWED_HOSTS = ['localhost','172.28.97.87', '3.13.165.191', 'medscrab.com']
 
 
 # Application definition
@@ -151,7 +151,7 @@ REST_FRAMEWORK = {
 
 JWT_AUTH = {
     'JWT_ALLOW_REFRESH': True,
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=3600),
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=60*60*24),
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -175,3 +175,5 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_UNIQUE_EMAIL = True
 
 AUTH_USER_MODEL = 'medicalapp.MyUser'
+
+DEFAULT_QUIZ_POINT = 10

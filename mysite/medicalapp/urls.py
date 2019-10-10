@@ -4,20 +4,18 @@ from rest_framework import routers
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
 from . import views
-from .api.viewset import DrugViewSet
-from .api.viewset import DrugInfoViewSet
-from .api.viewset import KeywordViewSet
-from .api.quizviewset import DrugQuizViewSet
-from .api.quizviewset import AnswerViewSet
-from .api.userviewset import UserViewSet
-from .api.userviewset import ObtainJWTView
+from .api.viewsets.drug import DrugViewSet
+from .api.viewsets.keyword import KeywordViewSet
+from .api.viewsets.quiz import DrugQuizViewSet
+from .api.viewsets.quiz import AnswerViewSet
+from .api.viewsets.user import UserViewSet
+from .api.viewsets.user import ObtainJWTView
+from .api.viewsets.user import UserProfileViewSet
 
 router = routers.DefaultRouter()
 router.register(r'api/drugs', DrugViewSet)
-#router.register(r'api/druginfo', DrugInfoViewSet)
 router.register(r'api/keys', KeywordViewSet)
 router.register(r'api/quiz', DrugQuizViewSet)
-#router.register(r'api/user', UserViewSet)
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -27,4 +25,5 @@ urlpatterns = [
     path(r'api-token-refresh/', refresh_jwt_token),
     path(r'api/register/', UserViewSet.as_view()),
     path(r'api/checkans/', AnswerViewSet.as_view()),
+    path(r'api/profile/', UserProfileViewSet.as_view()),
 ]

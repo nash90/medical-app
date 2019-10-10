@@ -16,6 +16,7 @@ from .models import DrugQuizOption
 from .models import DrugKeyword
 from .models import DrugInformationKeyword
 from .myuser import Profile
+#from .models import GameBadge
 
 class CustomModelAdminMixin(object):
 
@@ -85,7 +86,7 @@ class DrugInformationTypeAdmin(CustomModelAdminMixin, admin.ModelAdmin):
   search_fields = ('drug_information_type',)   
 
 class DrugInformationAdmin(CustomModelAdminMixin, admin.ModelAdmin):
-  search_fields = ('drug__drug_name','drug_info_type__drug_information_type','information',)   
+  search_fields = ('drug__drug_name','drug_info_type__drug_information_type','information','keyword_bk')   
 
 class DrugQuizQuestionAdmin(CustomModelAdminMixin, admin.ModelAdmin):
   search_fields = ('quiz_question', 'drug__drug_name', 'drug_info_type__drug_information_type')   
@@ -94,14 +95,19 @@ class DrugQuizOptionAdmin(CustomModelAdminMixin, admin.ModelAdmin):
   search_fields = ('quiz_option','quiz__drug_quiz_id', 'quiz__quiz_question')    
 
 class DrugKeywordAdmin(CustomModelAdminMixin, admin.ModelAdmin):
-  search_fields = ('drug_keyword',)  
+  search_fields = ('keyword',)  
 
 class DrugInformationKeywordAdmin(CustomModelAdminMixin, admin.ModelAdmin):
-  search_fields = ('drug_info__drug_name','keyword__drug_keyword')  
+  search_fields = ('drug_info__drug__drug_name','keyword__keyword')  
 
 class ProfileAdmin(CustomModelAdminMixin, admin.ModelAdmin):
   search_fields = ('user__email','date_of_birth')  
 
+class PointsAdmin(CustomModelAdminMixin, admin.ModelAdmin):
+  search_fileds = ('user__email')
+
+class BadgeAdmin(CustomModelAdminMixin, admin.ModelAdmin):
+  search_fileds = ('name')
 
 admin.site.register(MyUser, MyUserClassAdmin)  
 admin.site.register(DrugClass, DrugClassAdmin)
@@ -114,3 +120,4 @@ admin.site.register(DrugQuizOption, DrugQuizOptionAdmin)
 admin.site.register(DrugKeyword, DrugKeywordAdmin)
 admin.site.register(DrugInformationKeyword, DrugInformationKeywordAdmin)
 admin.site.register(Profile, ProfileAdmin)
+#admin.site.register(GameBadge, BadgeAdmin)

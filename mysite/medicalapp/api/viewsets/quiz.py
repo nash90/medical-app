@@ -7,12 +7,15 @@ from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework import renderers
 
-from ..models import DrugQuizQuestion
-from ..models import DrugQuizOption
+from django.conf import settings
 
-from .serializer import DrugQuizSerializer
-from .serializer import DrugQuizDetailSerializer
-from .serializer import QuizAnswerSerializer
+from ...models import DrugQuizQuestion
+from ...models import DrugQuizOption
+from ...myuser import Profile
+
+from ..serializer import DrugQuizSerializer
+from ..serializer import DrugQuizDetailSerializer
+from ..serializer import QuizAnswerSerializer
 
 class DrugQuizViewSet(viewsets.ModelViewSet):
     queryset = DrugQuizQuestion.objects.all()
@@ -88,6 +91,7 @@ class AnswerViewSet(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def post(self, request, format=None):
+        user = request.user
         serializer = QuizAnswerSerializer(data=request.data, many=True)
         result = []
         if serializer.is_valid():
@@ -104,14 +108,33 @@ class AnswerViewSet(APIView):
                 }
                 correct_answer = DrugQuizOption.objects.filter(quiz__drug_quiz_id=quiz_id).filter(correct_flag=True)
 
-                correct_answer = correct_answer[0]
-                correct_id = correct_answer.quiz_option_id
+                correct_id = 0
+                if len(correct_answer) > 0:
+                    correct_answer = correct_answer[0]
+                    correct_id = correct_answer.quiz_option_id
+                
                 if (correct_id) == answer:
                     res["correct"] = True
+                    updatePoints(user)
                 else:
                     wrong_answer = DrugQuizOption.objects.get(quiz_option_id=answer)
                     res["message"] = wrong_answer.rational
+                    if res["message"] == "NaN":
+                        res["message"] = ""
                 res["correct_option_id"] = correct_id
                 result.append(res)
               
         return Response(result)
+
+## helper methods
+
+def updatePoints(user):
+    profile = Profile.objects.get(user__email=user)
+    current_points = profile.points
+    correct_points = settings.DEFAULT_QUIZ_POINT
+    if current_points == None:
+        profile.points = correct_points
+        profile.save()
+    else:
+        profile.points = current_points + correct_points
+        profile.save()

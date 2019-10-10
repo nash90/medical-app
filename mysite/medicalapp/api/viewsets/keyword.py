@@ -5,45 +5,13 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework import renderers
+from django.conf import settings
 
-from ..models import Drug
-from ..models import DrugInformation
-from ..models import DrugKeyword
+from ...models import DrugKeyword
+from ...myuser import Profile
 
-from .serializer import DrugSerializer
-from .serializer import DrugInfoSerializer
-from .serializer import DrugKeywordSerializer
-from .serializer import GameKeywordSerializer
-
-class DrugViewSet(viewsets.ModelViewSet):
-    queryset = Drug.objects.all()
-    serializer_class = DrugSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    http_method_names = ['get']
-
-    @action(detail=False)
-    def custom(self, request):
-        data = Drug.objects.all()
-        serializer = DrugSerializer(data, many=True)
-        return Response(serializer.data)
-
-    @action(detail=True)
-    def info(self, request, pk=0):
-        data = DrugInformation.objects.filter(drug__drug_id=pk)
-        serializer = DrugInfoSerializer(data, many=True)
-        return Response(serializer.data)   
-    
-    @action(detail=True)
-    def gameinfo(self, request, pk=0):
-        data = DrugInformation.objects.filter(drug__drug_id=pk)
-        serializer = DrugInfoSerializer(data, many=True)
-        return Response(serializer.data)
-
-class DrugInfoViewSet(viewsets.GenericViewSet):
-    queryset = DrugInformation.objects.all()
-    serializer_class = DrugInfoSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    http_method_names = ['get']
+from ..serializer import DrugKeywordSerializer
+from ..serializer import GameKeywordSerializer
 
 class KeywordViewSet(viewsets.ModelViewSet):
     queryset = DrugKeyword.objects.all()
@@ -64,6 +32,7 @@ class KeywordViewSet(viewsets.ModelViewSet):
 
     @action(detail=True)
     def answer(self, request, pk=0):
+        user = request.user
         params = request.query_params
         answer = params["answer"]
         res = {
@@ -73,6 +42,7 @@ class KeywordViewSet(viewsets.ModelViewSet):
             keyword_obj = DrugKeyword.objects.get(keyword_id=pk)
             if (answer.lower() == keyword_obj.keyword.lower()):
                 res["correct"] = True
+                updatePoints(user)
         return Response(res)
 
 
@@ -87,3 +57,14 @@ def keywordScrabble(keyword):
         else:
             new_key = new_key + item
     return new_key
+
+def updatePoints(user):
+    profile = Profile.objects.get(user__email=user)
+    current_points = profile.points
+    correct_points = settings.DEFAULT_QUIZ_POINT
+    if current_points == None:
+        profile.points = correct_points
+        profile.save()
+    else:
+        profile.points = current_points + correct_points
+        profile.save()

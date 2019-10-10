@@ -12,10 +12,10 @@ from rest_framework_jwt.views import ObtainJSONWebToken
 
 from django.contrib import auth
 User = auth.get_user_model()
-from ..myuser import Profile
+from ...myuser import Profile
 
-from .serializer import ProfileSerializer
-from .serializer import JWTSerializer
+from ..serializer import ProfileSerializer
+from ..serializer import JWTSerializer
 
 class UserViewSet(APIView):
   authentication_classes = []
@@ -23,7 +23,7 @@ class UserViewSet(APIView):
   permission_classes = [permissions.AllowAny]
   def post(self, request, format=None):
     serializer = ProfileSerializer(data=request.data)
-    if serializer.is_valid():
+    if serializer.is_valid(raise_exception=True):
       serializer.save()
       return Response(serializer.data)
     else:
@@ -32,6 +32,22 @@ class UserViewSet(APIView):
 class ObtainJWTView(ObtainJSONWebToken):
     serializer_class = JWTSerializer
 
+class UserProfileViewSet(APIView):
+  permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
+  def get(self, request, format=None):
+    email = request.user
+    #print(email)
+    profile = None
+    try:
+      profile = Profile.objects.get(user__email=email)
+    except Exception as e:
+      print(e)
+    if profile != None:
+      serializer = ProfileSerializer(profile)
+      return Response(serializer.data)
+    else:
+      return Response('Profile does not exist')
 
 
     
