@@ -14,7 +14,7 @@ from ..serializer import DrugSerializer
 from ..serializer import DrugInfoSerializer
 
 class DrugViewSet(viewsets.ModelViewSet):
-    queryset = Drug.objects.all()
+    queryset = Drug.objects.all().order_by('drug_name')
     serializer_class = DrugSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     http_method_names = ['get']
