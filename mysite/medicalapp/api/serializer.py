@@ -91,7 +91,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         user_form = validated_data['user']
         user = User.objects.create(
             email = user_form['email'],
-            password = hashers.make_password(settings.STATIC_PW) # Stakeholder wanted login without PW
+            # password = hashers.make_password(user_form['password']) # Stakeholder wanted login without PW
         )
         Profile.objects.create(
             user=user, 
@@ -106,19 +106,19 @@ class JWTSerializer(JSONWebTokenSerializer):
     def validate(self, attrs):
         credentials = {
             self.username_field: attrs.get(self.username_field),
-            'password' : settings.STATIC_PW # Stakeholder wanted login without PW      
+            # 'password' : attrs.get('password') # Stakeholder wanted login without PW      
         }
 
         if all(credentials.values()):
-            user = authenticate(request=self.context['request'], **credentials)
+            # user = authenticate(request=self.context['request'], **credentials) # used if password login active
+            user = User.objects.get(email = attrs.get(self.username_field))
 
             if user:
                 if not user.is_active:
                     msg = 'User account is disabled.'
                     raise serializers.ValidationError(msg)
                 profile = Profile.objects.get(user_id = user.id)
-                # print(profile.date_of_birth.year)
-                # print(attrs.get('year_of_birth'))
+
                 if str(profile.date_of_birth.year) != attrs.get('year_of_birth'):
                     msg = 'Incorrect login information provided'
                     raise serializers.ValidationError(msg)
