@@ -17,7 +17,7 @@ from ..serializer import DrugQuizSerializer
 from ..serializer import DrugQuizDetailSerializer
 from ..serializer import QuizAnswerSerializer
 
-class DrugQuizViewSet(viewsets.ModelViewSet):
+class DrugQuizViewSet(viewsets.ViewSet):
     queryset = DrugQuizQuestion.objects.all()
     serializer_class = DrugQuizSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
