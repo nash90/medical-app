@@ -31,13 +31,14 @@ class DrugQuizViewSet(viewsets.ViewSet):
         """
         drug_quiz = DrugQuizQuestion.objects.get(drug_quiz_id=pk)
         quiz_option = DrugQuizOption.objects.filter(quiz__drug_quiz_id=pk)
+        quiz_option = list(quiz_option)
+        random.shuffle(quiz_option)        
         data = {
             "drug_quiz": drug_quiz,
             "quiz_option": quiz_option
         }
         
         serializer = DrugQuizDetailSerializer(data)
-        serializer.data['quiz_option'] = shuffleQuiz(serializer.data)
         return Response(serializer.data)
 
     @action(detail=False)
@@ -64,14 +65,15 @@ class DrugQuizViewSet(viewsets.ViewSet):
         data_list = []
         for item in drug_quiz:
             quiz_option =  DrugQuizOption.objects.filter(quiz__drug_quiz_id=item.drug_quiz_id)
+            quiz_option = list(quiz_option)
+            random.shuffle(quiz_option)
             data = {
-            "drug_quiz":item,
-            "quiz_option":quiz_option
+            "drug_quiz": item,
+            "quiz_option": quiz_option
             }
             data_list.append(data)  
 
         serializer = DrugQuizDetailSerializer(data_list, many=True)
-        serializer.data['quiz_option'] = shuffleQuiz(serializer.data)
         return Response(serializer.data)
 
     @action(detail=True)
@@ -152,6 +154,3 @@ def updatePoints(user):
     else:
         profile.points = current_points + correct_points
         profile.save()
-
-def shuffleQuiz(data):
-    return random.shuffle(data.get('quiz_option'))
