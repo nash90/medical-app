@@ -135,6 +135,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
@@ -151,7 +152,8 @@ REST_FRAMEWORK = {
 
 JWT_AUTH = {
     'JWT_ALLOW_REFRESH': True,
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=60*60*24),
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=60*60*24*60),
+    'JWT_VERIFY_EXPIRATION': False # for more secure, add update expiry on active
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -164,8 +166,6 @@ CORS_ORIGIN_REGEX_WHITELIST = [
     'http://localhost:4200',
     'http://172.28.97.87:8100'
 ]
-
-STATIC_PW = "test1234"
 
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False

@@ -17,7 +17,7 @@ from ..serializer import DrugQuizSerializer
 from ..serializer import DrugQuizDetailSerializer
 from ..serializer import QuizAnswerSerializer
 
-class DrugQuizViewSet(viewsets.ModelViewSet):
+class DrugQuizViewSet(viewsets.ViewSet):
     queryset = DrugQuizQuestion.objects.all()
     serializer_class = DrugQuizSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
@@ -25,8 +25,14 @@ class DrugQuizViewSet(viewsets.ModelViewSet):
 
     @action(detail=True)
     def info(self, request, pk=0):
+        """
+        Api Handler to get quiz information by id,
+        returns a quiz and its option
+        """
         drug_quiz = DrugQuizQuestion.objects.get(drug_quiz_id=pk)
         quiz_option = DrugQuizOption.objects.filter(quiz__drug_quiz_id=pk)
+        quiz_option = list(quiz_option)
+        random.shuffle(quiz_option)        
         data = {
             "drug_quiz": drug_quiz,
             "quiz_option": quiz_option
@@ -37,6 +43,10 @@ class DrugQuizViewSet(viewsets.ModelViewSet):
 
     @action(detail=False)
     def filter(self, request):
+        """
+        Api Handler to get quizes information by drug id, drug_info_type, quiz_type
+        returns a list of quiz and its option        
+        """
         params = request.query_params
         drug = params.get("drug", 0)
         drug_info_type = params.get("drug_info_type", 0)
@@ -55,9 +65,11 @@ class DrugQuizViewSet(viewsets.ModelViewSet):
         data_list = []
         for item in drug_quiz:
             quiz_option =  DrugQuizOption.objects.filter(quiz__drug_quiz_id=item.drug_quiz_id)
+            quiz_option = list(quiz_option)
+            random.shuffle(quiz_option)
             data = {
-            "drug_quiz":item,
-            "quiz_option":quiz_option
+            "drug_quiz": item,
+            "quiz_option": quiz_option
             }
             data_list.append(data)  
 
@@ -67,6 +79,7 @@ class DrugQuizViewSet(viewsets.ModelViewSet):
     @action(detail=True)
     def answer(self, request, pk=0):
         """
+        check answer of quiz one by one
         not used after the bulk answer check was implemented
         """
         params = request.query_params
@@ -91,6 +104,9 @@ class AnswerViewSet(APIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def post(self, request, format=None):
+        """
+        Api handler for checking answer of a quiz in bulk
+        """
         user = request.user
         serializer = QuizAnswerSerializer(data=request.data, many=True)
         result = []

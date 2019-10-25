@@ -22,6 +22,9 @@ class UserViewSet(APIView):
   queryset = User.objects.all()
   permission_classes = [permissions.AllowAny]
   def post(self, request, format=None):
+    """
+    Handler to create user profile/account
+    """
     serializer = ProfileSerializer(data=request.data)
     if serializer.is_valid(raise_exception=True):
       serializer.save()
@@ -33,6 +36,9 @@ class ObtainJWTView(ObtainJSONWebToken):
     serializer_class = JWTSerializer
 
 class UserProfileViewSet(APIView):
+  """
+  Handler to get user profile information
+  """
   permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
   def get(self, request, format=None):

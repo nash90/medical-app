@@ -54,7 +54,7 @@ class UserChangeForm(forms.ModelForm):
         # field does not have access to the initial value
         return self.initial["password"]
 
-class MyUserClassAdmin(CustomModelAdminMixin, UserAdmin):
+class MyUserClassAdmin(UserAdmin):
   model = MyUser
   form = UserChangeForm
   add_form = UserCreationForm

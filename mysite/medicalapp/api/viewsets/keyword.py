@@ -21,6 +21,9 @@ class KeywordViewSet(viewsets.ModelViewSet):
 
     @action(detail=True)
     def game(self, request, pk=0):
+        """
+        Handler of get randomly filled keyword
+        """
         keyword = DrugKeyword.objects.get(keyword_id=pk)
         data = {
             "keyword": keyword,
@@ -32,6 +35,9 @@ class KeywordViewSet(viewsets.ModelViewSet):
 
     @action(detail=True)
     def answer(self, request, pk=0):
+        """
+        Handler to check the answer of the keyword is correct
+        """
         user = request.user
         params = request.query_params
         answer = params["answer"]
@@ -59,6 +65,10 @@ def keywordScrabble(keyword):
     return new_key
 
 def updatePoints(user):
+    """
+    update points for a user,
+    called when answer is correct
+    """
     profile = Profile.objects.get(user__email=user)
     current_points = profile.points
     correct_points = settings.DEFAULT_QUIZ_POINT
