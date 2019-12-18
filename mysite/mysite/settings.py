@@ -178,4 +178,4 @@ AUTH_USER_MODEL = 'medicalapp.MyUser'
 
 DEFAULT_QUIZ_POINT = 10
 
-STATIC_WEBSITE_URL = 'http://3.136.94.208/'
+STATIC_WEBSITE_URL = 'http://home.medscrab.com/'
